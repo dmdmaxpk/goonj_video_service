@@ -68,7 +68,7 @@ const videoSchema = new Schema({
         type: Array
     },
     last_edited: {
-        type: String
+        type: Date
     },
     program: {
         type: String

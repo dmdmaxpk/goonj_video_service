@@ -4,7 +4,7 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 
-const mongo = require('./routes/mongo');
+const index = require('./routes/index');
 
 const app = express();
 
@@ -15,6 +15,6 @@ app.use(mongoSanitize());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes:
-app.use('/mongo', mongo);
+app.use('/', index);
 
 module.exports = app;

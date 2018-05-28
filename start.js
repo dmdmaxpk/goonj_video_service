@@ -9,6 +9,7 @@ mongoose.connection.on('error', (err) => {
 
 // import models
 require('./models/Video');
+require('./models/Category');
 
 // Start our app!
 const app = require('./app');

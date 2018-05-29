@@ -14,6 +14,7 @@
     "jade": "~1.11.0",
     "mongodb": "^3.0.7",
     "mongoose": "^5.0.17",
+    "mongoose-shortid-nodeps": "^0.6.5",
     "morgan": "~1.9.0",
     "serve-favicon": "~2.4.5",
     "shortid": "^2.2.8",

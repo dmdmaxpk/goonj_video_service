@@ -11,6 +11,7 @@ mongoose.connection.on('error', (err) => {
 require('./models/Video');
 require('./models/Category');
 require('./models/Tag');
+require('./models/Anchor');
 
 // Start our app!
 const app = require('./app');

@@ -12,6 +12,7 @@ require('./models/Video');
 require('./models/Category');
 require('./models/Tag');
 require('./models/Anchor');
+require('./models/Topic');
 
 // Start our app!
 const app = require('./app');

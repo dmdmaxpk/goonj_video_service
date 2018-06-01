@@ -1,39 +1,34 @@
 const mongoose = require('mongoose');
+const ShortId = require('mongoose-shortid-nodeps');
 const {Schema} = mongoose;
+
 
 const videoSchema = new Schema({
     //Original 36 in Old
     //New 21
-    title: {
-        type: String
-    },
-    category: {
-        type: String
-    },
-    sub_category: {
-        type: String
-    },
-    year: {
-        type: Number
-    },
-    added_dtm: {
-        type: Date
-    },
-    active: {
-        type: Boolean
-    },
-    anchor: {
-        type: String
-    },
-    bit_rates: {
-        type: Array
-    },
-    description: {
-        type: String
-    },
-    duration: {
-        type: String
-    },
+    _id: ShortId,   //Generating shortid instead of uuid
+    title: String,
+    description: String,
+    program: String,
+    source: String,
+    category: String,
+    sub_category: String,
+    // year: { type: Number, default: new Date().getFullYear() },
+    added_dtm: { type: Date, default: Date.now },
+    // added_dtm: Date,    //It can be CMS side or here as default(time zone can be different)
+    publish_dtm: Date,
+    last_modified: Date,
+    anchor: String,
+    guests: Array,
+    tags: Array,
+    topics: Array,
+    bit_rates: Array,
+    duration: String,
+    file_name: String,
+    thumbnail: String,
+    slug: String,
+    active: { type: Boolean, default: false },
+    transcoding_status: { type: Boolean, default: false }
     // enable_ads: {
     //     type: Boolean
     // },
@@ -61,21 +56,6 @@ const videoSchema = new Schema({
     // progress: {
     //     type: String
     // },
-    file_name: {
-        type: String
-    },
-    guests: {
-        type: Array
-    },
-    last_edited: {
-        type: Date
-    },
-    program: {
-        type: String
-    },
-    publish_dtm: {
-        type: Date
-    },
     // publisher_id: {
     //     type: String
     // },
@@ -88,24 +68,7 @@ const videoSchema = new Schema({
     // platforms: {
     //     type: Array
     // },
-    slug: {
-        type: String
-    },
-    source: {
-        type: String
-    },
-    tags: {
-        type: Array
-    },
-    thumbnail: {
-        type: String
-    },
-    topics: {
-        type: Array
-    },
-    transcoding_status: {
-        type: Boolean
-    }
+    
 }, { strict: false })
 
 module.exports = mongoose.model('Video', videoSchema);

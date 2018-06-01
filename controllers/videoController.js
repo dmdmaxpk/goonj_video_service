@@ -2,21 +2,12 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Video = mongoose.model('Video');
-const shortid = require('shortid');
 
-
-// shortid
-// shortid.generate(). OR replace(/-|_/g, '~')
 
 exports.post = async (req, res) => {
 
     let postData = req.body;
 	console.log(postData);
-
-	postData.sID = shortid.generate();
-	postData.year = new Date().getFullYear();
-	postData.active = false;
-	postData.transcoding_status = false;
 
 	let video = new Video (postData);
 	let result = await video.save();
@@ -30,27 +21,27 @@ exports.post = async (req, res) => {
 
 exports.get = async (req, res) => {
 
-	let { _id, sID, title, category, duration, added_dtm, sub_category, active, feed } = req.query;
+	let { _id, title, category, sub_category, added_dtm, active, feed, anchor, topics } = req.query;
 	const query = {};
 
+	if (_id) query._id = _id;
 	if (title) query.title = title;	
 	if (category) query.category = category;
-	if (duration) query.duration = duration;
+	if (anchor) query.anchor = { $in: anchor.split(',') } 
+	if (topics) query.topics = { $in: topics.split(',') } 
 	if (added_dtm) query.added_dtm = added_dtm;
 	if (feed) query.feed = feed;
-	if (sID) query.sID = sID;
-	if (_id) query._id = _id;
 	if (active) query.active = active;
 
 	console.log(query);
 	
 	let result;
-	if (_id || sID) {
+	if (_id) {		//If _id then findOne
 		result = await Video.findOne(query); 
 		console.log("1st");
 	}
 	else {
-		result = await Video.find(query).sort({_id:-1});; 		// _id field has a date embedded in it, so we can use that to order 
+		result = await Video.find(query).sort({added_dtm:-1});; 		// _id field has a date embedded in it, so we can use that to order 
 		console.log("2nd");
 	}
 
@@ -78,7 +69,7 @@ exports.get = async (req, res) => {
 
 exports.put = async (req, res) => {
 
-	const query = { sID: req.query.sID };
+	const query = { _id: req.query._id };
 	console.log("Query: ", query);
 	
 	let postBody = req.body;
@@ -92,12 +83,14 @@ exports.put = async (req, res) => {
 }
 
 exports.delete = async (req, res) => {
-	const { sID } = req.query;
-	const result = await Video.findOneAndRemove( { sID } );
+
+	const query = { _id: req.query._id };
+
+	const result = await Video.findOneAndRemove( query );
 	
 	if (result) {
-		console.log(`Video sID: ${sID} Deleted!`);
-		res.send(`Video sID: ${sID} Deleted!`);
+		console.log(`Video _id: ${query._id} Deleted!`);
+		res.send(`Video _id: ${query._id} Deleted!`);
 	}
 	else {
 		console.log('No video with this ID found!');

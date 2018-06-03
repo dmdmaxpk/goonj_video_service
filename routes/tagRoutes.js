@@ -4,9 +4,9 @@ const tagController = require('../controllers/tagController')
 
 
 router.route('/')
-    .get(tagController.view)
-    .post(tagController.add)
-    .put(tagController.update)
+    .get(tagController.get)
+    .post(tagController.post)
+    .put(tagController.put)
     .delete(tagController.delete);
 
     

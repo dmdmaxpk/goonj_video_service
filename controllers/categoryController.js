@@ -1,13 +1,9 @@
-const express = require('express');
-const router = express.Router();
 const mongoose = require('mongoose');
 const Category = mongoose.model('Category');
-const shortid = require('shortid');
-
  
-// For finding:
-// db.inventory.find( { 'sub_category.title': "A" } )
 
+// For finding:
+// db.inventory.find( { 'sub_category.name': "A" } )
 
 //PATH: categories (TOP LEVEL, only main categories) ADD new option of category
 //PATH: categories/weather/ (ALL subcatgories of weather) ADD new subcat
@@ -28,16 +24,23 @@ exports.post = async (req, res) => {
 			query,
 			{ $push : { sub_categories: postData } }
 		);
-		console.log(`SUB-CATEGORY: "${postData.title}" ADDED to ${catID}!!`);
-		res.send(`SUB-CATEGORY: "${postData.title}" ADDED to ${catID}!!`);
+		
+		if (result.nModified == 0) {
+			res.send(`No Category with ID: ${catID} found!`);
+			console.log(`No Category with ID: ${catID} found!`);
+		}
+		else {
+			console.log(`SUB-CATEGORY: "${postData.name}" ADDED to ${catID}!!`);
+			res.send(`SUB-CATEGORY: "${postData.name}" ADDED to ${catID}!!`);
+		}
 	}
 	// 2- If no category is provided then add the category
 	// URL Sample: /category/add
 	else {
 		let category = new Category (postData);
 		result = await category.save();
-		console.log(`CATEGORY: "${postData.title}" ADDED!!`);
-		res.send(`CATEGORY: "${postData.title}" ADDED!!`);
+		console.log(`CATEGORY: "${postData.name}" ADDED!!`);
+		res.send(`CATEGORY: "${postData.name}" ADDED!!`);
 	}
 	console.log(result);
 }
@@ -48,7 +51,7 @@ exports.get = async (req, res) => {
 	const { catID, subcatID } = req.query;
 	let query = {};
 
-	// if (cat) query.title = cat;	
+	// if (cat) query.name = cat;	
 	if (catID) query._id = catID;
 
 	console.log("Query: ", query);
@@ -57,12 +60,12 @@ exports.get = async (req, res) => {
 	// Three cases for finding category and subcategories
 	// 1- For finding the subcategory of a category
 	// URL Sample: /category/view?catID=S1lVrJ2OAz&subcatID=jds86
-	if (subcatID) {
+	if (catID && subcatID) {
 		result = await Category.findOne( query, { sub_categories: { $elemMatch: { _id: subcatID } } } );
 		console.log("-----Finding SubCategory");
 		res.send(result.sub_categories[0]);
 	}
-	// 2- For finding just the category and its subcategories by its ID || title
+	// 2- For finding just the category and its subcategories by its ID
 	// URL Sample: /category/view?catID=ahi8a1
 	else if (catID) {
 		result = await Category.findOne(query); 
@@ -72,7 +75,7 @@ exports.get = async (req, res) => {
 	// 3- If nothing is provided then finding all the categories with their all subcategories
 	// URL Sample: /category/view
 	else {
-		result = await Category.find(query).sort({title:1});	//Sorting by ascending order of the title name 
+		result = await Category.find(query).sort({name:1});	//Sorting by ascending order of the name 
 		console.log("-----Finding All categories with subcategories");
 		res.send(result);
 	}
@@ -82,7 +85,7 @@ exports.get = async (req, res) => {
 exports.put = async (req, res) => {
 
 	// 2 use cases: update the category and update the subcat
-	// URL Sample: /category/update/S1lVrJ2OAz?subcat=dhas82
+	// URL Sample: /category/update/?catID=S1lVrJ2OAz&subcatID=dhas82
 	// const { catID } = req.params;
 	const { catID, subcatID } = req.query;
 	
@@ -93,40 +96,42 @@ exports.put = async (req, res) => {
 	let result;
 	// If subcat is provided then it will update the subcat
 	// URL Sample: /category/update/S1lVrJ2OAz?subcatID=jds86
-	if (subcatID) {
+	if (catID && subcatID) {
 
 		// Making data obj for Updating all the values submitted
-		var updateData = {};
-		for (var prop in postBody) {
+		let updateData = {};
+		for (let prop in postBody) {
 			updateData[`sub_categories.$.${prop}`] = postBody[prop];
 		}
-		console.log(updateData);
 
 		result = await Category.updateOne(
 			{ _id: catID, "sub_categories._id": subcatID },	//Finding the _id of cat and the _id of subcat
 			updateData		//Updating the whole document of that subcat by new values, $set is default
 			// { $set: { "sub_categories.$" : postBody } }		//If we want to replace the whole object, but the id wont be added
 		)
-		if (result) {
+
+		if (result.nModified == 0) {
+			res.send(`No SubCategory with ID: ${subcatID} found!`);
+			console.log(`No Category with ID: ${subcatID} found!`);
+		}
+		else {
 			console.log("SUBCATEGORY UPDATED");
 			res.send("SUBCATEGORY UPDATED!!!");
 		}
-		else{
-			console.log("No SubCategory Found!");
-			res.send("No SubCategory Found!");
-		}
+		
 	}
 	// If no subcat, update the cat:
 	// URL Sample: /category/update/S1lVrJ2O
 	else {
 		result = await Category.update({ _id: catID }, postBody);
-		if (result) {
+		console.log(result);
+		if (result.nModified == 0) {
+			res.send(`No Category with ID: ${catID} found!`);
+			console.log(`No Category with ID: ${catID} found!`);
+		}
+		else {
 			console.log("CATEGORY UPDATED");
 			res.send("CATEGORY UPDATED!!!");
-		}
-		else{
-			console.log("No Category Found!");
-			res.send("No Category Found!");
 		}
 	}
 

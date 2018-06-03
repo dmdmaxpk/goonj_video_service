@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const mongoose = require('mongoose');
 const Topic = mongoose.model('Topic');
 
@@ -13,16 +11,16 @@ exports.post = async (req, res) => {
 	const topic = new Topic (postData);
 	const result = await topic.save();
 	
-	console.log(`Topic Added: ${result.title}`);
+	console.log(`Topic Added: ${result.name}`);
     res.send("Topic Added!");
 }
 
 exports.get = async (req, res) => {
 
-	const { _id, title } = req.query;
+	const { _id, name } = req.query;
 	let query = {};
 
-	if (title) query.title = title;	
+	if (name) query.name = name;	
 	if (_id) query._id = _id;
 
 	console.log(query);
@@ -49,10 +47,17 @@ exports.put = async (req, res) => {
 	postBody.last_edited = new Date();
 	console.log("Body: ", postBody);
 	
-	const result = await Topic.update(query, postBody);
-	console.log("Resp: ", result);
+	const result = await Topic.updateOne(query, postBody);
 
-	res.send("TOPIC UPDATED!!!");
+	if (result.nModified == 0) {
+		console.log('No Topic with this ID found!');
+		res.send('No Topic with this ID found!');
+	}
+	else {
+		console.log(`TOPIC Updated!`);
+		res.send(`TOPIC Updated!`);
+	}
+
 }
 
 exports.delete = async (req, res) => {
@@ -60,8 +65,8 @@ exports.delete = async (req, res) => {
 	const result = await Topic.findOneAndRemove( { _id } );
 	console.log(result);
 	if (result) {
-		console.log(`Topic ID: ${_id}, Title: ${result.title} Deleted!`);
-		res.send(`Topic ID: ${_id}, Title: ${result.title} Deleted!`);
+		console.log(`Topic ID: ${_id}, Name: ${result.name} Deleted!`);
+		res.send(`Topic ID: ${_id}, Name: ${result.name} Deleted!`);
 	}
 	else {
 		console.log('No Topic with this ID found!');

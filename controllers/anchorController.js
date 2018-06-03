@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const mongoose = require('mongoose');
 const Anchor = mongoose.model('Anchor');
 
@@ -49,10 +47,15 @@ exports.put = async (req, res) => {
 	postBody.last_edited = new Date();
 	console.log("Body: ", postBody);
 	
-	const result = await Anchor.update(query, postBody);
-	console.log("Resp: ", result);
-
-	res.send("ANCHOR UPDATED!!!");
+	const result = await Anchor.updateOne(query, postBody);
+	if (result.nModified == 0) {
+		console.log('No Anchor with this ID found!');
+		res.send('No Anchor with this ID found!');
+	}
+	else {
+		console.log(`Anchor Updated!`);
+		res.send(`Anchor Updated!`);
+	}
 }
 
 exports.delete = async (req, res) => {
@@ -61,7 +64,7 @@ exports.delete = async (req, res) => {
 	console.log(result);
 	if (result) {
 		console.log(`Anchor ID: ${_id}, Name: ${result.name} Deleted!`);
-		res.send(`Anchor ID: ${_id}, Name: ${result.name} Deleted!`);
+		res.send(`Anchor ID: ${_id}, Name: ${result.name} Deleted!`);	
 	}
 	else {
 		console.log('No Anchor with this ID found!');

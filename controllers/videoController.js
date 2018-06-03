@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const mongoose = require('mongoose');
 const Video = mongoose.model('Video');
 
@@ -76,10 +74,16 @@ exports.put = async (req, res) => {
 	postBody.last_edited = new Date();
 	console.log("Body: ", postBody);
 	
-	const result = await Video.update(query, postBody);
-	console.log("Result: ", result);
-
-	res.send("VIDEO UPDATED!!!");
+	const result = await Video.updateOne(query, postBody);
+	
+	if (result.nModified == 0) {
+		console.log('No Video with this ID found!');
+		res.send('No Video with this ID found!');
+	}
+	else {
+		console.log(`Video Updated!`);
+		res.send(`Video Updated!`);
+	}
 }
 
 exports.delete = async (req, res) => {

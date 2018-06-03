@@ -1,10 +1,8 @@
-const express = require('express');
-const router = express.Router();
 const mongoose = require('mongoose');
 const Tag = mongoose.model('Tag');
 
 
-exports.add = async (req, res) => {
+exports.post = async (req, res) => {
 
     const postData = req.body;
 	console.log(postData);
@@ -12,16 +10,16 @@ exports.add = async (req, res) => {
 	let tag = new Tag (postData);
 	let result = await tag.save();
 	
-	console.log(`Tag Added: ${result.title}`);
+	console.log(`Tag Added: ${result.name}`);
     res.send("Tag Added!");
 }
 
-exports.view = async (req, res) => {
+exports.get = async (req, res) => {
 
-	let { _id, title } = req.query;
+	let { _id, name } = req.query;
 	const query = {};
 
-	if (title) query.title = title;	
+	if (name) query.name = name;	
 	if (_id) query._id = _id;
 
 	console.log(query);
@@ -39,7 +37,7 @@ exports.view = async (req, res) => {
 	res.send(result);
 }
 
-exports.update = async (req, res) => {
+exports.put = async (req, res) => {
 
 	const query = { _id: req.query._id };
 	console.log("Query: ", query);
@@ -48,10 +46,16 @@ exports.update = async (req, res) => {
 	postBody.last_edited = new Date();
 	console.log("Body: ", postBody);
 	
-	const result = await Tag.update(query, postBody);
-	console.log("Resp: ", result);
+	const result = await Tag.updateOne(query, postBody);
 
-	res.send("TAG UPDATED!!!");
+	if (result.nModified == 0) {
+		console.log('No tag with this ID found!');
+		res.send('No tag with this ID found!');
+	}
+	else {
+		console.log('Tag Updated!');
+		res.send('Tag Updated!');
+	}
 }
 
 exports.delete = async (req, res) => {
@@ -59,8 +63,8 @@ exports.delete = async (req, res) => {
 	const result = await Tag.findOneAndRemove( { _id } );
 	console.log(result);
 	if (result) {
-		console.log(`Tag ID: ${_id}, Title: ${result.title} Deleted!`);
-		res.send(`Tag ID: ${_id}, Title: ${result.title} Deleted!`);
+		console.log(`Tag ID: ${_id}, Name: ${result.name} Deleted!`);
+		res.send(`Tag ID: ${_id}, Name: ${result.name} Deleted!`);
 	}
 	else {
 		console.log('No tag with this ID found!');

@@ -27,6 +27,7 @@ const videoSchema = new Schema({
     file_name: String,
     thumbnail: String,
     slug: String,
+    pinned: Boolean,
     active: { type: Boolean, default: false },
     transcoding_status: { type: Boolean, default: false }
     // enable_ads: {

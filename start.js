@@ -13,6 +13,7 @@ require('./models/Category');
 require('./models/Tag');
 require('./models/Anchor');
 require('./models/Topic');
+require('./models/Channel');
 
 // Start our app!
 const app = require('./app');

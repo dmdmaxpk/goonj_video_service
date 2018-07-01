@@ -1,37 +1,30 @@
 const mongoose = require('mongoose');
 const Category = mongoose.model('Category');
- 
 
-// For finding:
-// db.inventory.find( { 'sub_category.name': "A" } )
-
-//PATH: categories (TOP LEVEL, only main categories) ADD new option of category
-//PATH: categories/weather/ (ALL subcatgories of weather) ADD new subcat
 
 exports.post = async (req, res) => {
 
-	let query = { _id: req.query.catID };
-	const { catID } = req.query;
+	let query = { _id: req.query.cat_id };
+	const { cat_id } = req.query;
 	let postData = req.body;
-	postData.added_dtm = new Date();
 
 	let result;
 	// Following are the two cases for adding category or subcategory
 	// 1- If category is provided then add the subcategory to it
-	// URL Sample: /category/add?catID=HJlH-7z1m
-	if (catID) {
+	// URL Sample: /category?cat_id=HJlH-7z1m
+	if (cat_id) {
 		result = await Category.update(
 			query,
 			{ $push : { sub_categories: postData } }
 		);
 		
 		if (result.nModified == 0) {
-			res.send(`No Category with ID: ${catID} found!`);
-			console.log(`No Category with ID: ${catID} found!`);
+			res.send(`No Category with ID: ${cat_id} found!`);
+			console.log(`No Category with ID: ${cat_id} found!`);
 		}
 		else {
-			console.log(`SUB-CATEGORY: "${postData.name}" ADDED to ${catID}!!`);
-			res.send(`SUB-CATEGORY: "${postData.name}" ADDED to ${catID}!!`);
+			console.log(`SUB-CATEGORY: "${postData.name}" ADDED to ${cat_id}!!`);
+			res.send(`SUB-CATEGORY: "${postData.name}" ADDED to ${cat_id}!!`);
 		}
 	}
 	// 2- If no category is provided then add the category
@@ -48,26 +41,26 @@ exports.post = async (req, res) => {
 
 exports.get = async (req, res) => {
 
-	const { catID, subcatID } = req.query;
+	const { cat_id, subcat_id, cat_name } = req.query;
 	let query = {};
 
-	// if (cat) query.name = cat;	
-	if (catID) query._id = catID;
+	if (cat_id) query._id = cat_id;
+	if (cat_name) query.name = cat_name;
 
 	console.log("Query: ", query);
 	
 	let result;
 	// Three cases for finding category and subcategories
 	// 1- For finding the subcategory of a category
-	// URL Sample: /category/view?catID=S1lVrJ2OAz&subcatID=jds86
-	if (catID && subcatID) {
-		result = await Category.findOne( query, { sub_categories: { $elemMatch: { _id: subcatID } } } );
+	// URL Sample: /category?cat_id=S1lVrJ2OAz&subcat_id=jds86
+	if (cat_id && subcat_id) {
+		result = await Category.findOne( query, { sub_categories: { $elemMatch: { _id: subcat_id } } } );
 		console.log("-----Finding SubCategory");
 		res.send(result.sub_categories[0]);
 	}
 	// 2- For finding just the category and its subcategories by its ID
-	// URL Sample: /category/view?catID=ahi8a1
-	else if (catID) {
+	// URL Sample: /category?cat_id=ahi8a1
+	else if (cat_id || cat_name) {
 		result = await Category.findOne(query); 
 		console.log("-----Finding Category");
 		res.send(result);
@@ -85,9 +78,7 @@ exports.get = async (req, res) => {
 exports.put = async (req, res) => {
 
 	// 2 use cases: update the category and update the subcat
-	// URL Sample: /category/update/?catID=S1lVrJ2OAz&subcatID=dhas82
-	// const { catID } = req.params;
-	const { catID, subcatID } = req.query;
+	const { cat_id, subcat_id } = req.query;
 	
 	let postBody = req.body;
 	postBody.last_edited = new Date();
@@ -95,8 +86,8 @@ exports.put = async (req, res) => {
 
 	let result;
 	// If subcat is provided then it will update the subcat
-	// URL Sample: /category/update/S1lVrJ2OAz?subcatID=jds86
-	if (catID && subcatID) {
+	// URL Sample: /category?cat_id=S1lVr?subcat_id=jds86
+	if (cat_id && subcat_id) {
 
 		// Making data obj for Updating all the values submitted
 		let updateData = {};
@@ -105,14 +96,14 @@ exports.put = async (req, res) => {
 		}
 
 		result = await Category.updateOne(
-			{ _id: catID, "sub_categories._id": subcatID },	//Finding the _id of cat and the _id of subcat
+			{ _id: cat_id, "sub_categories._id": subcat_id },	//Finding the _id of cat and the _id of subcat
 			updateData		//Updating the whole document of that subcat by new values, $set is default
 			// { $set: { "sub_categories.$" : postBody } }		//If we want to replace the whole object, but the id wont be added
 		)
 
-		if (result.nModified == 0) {
-			res.send(`No SubCategory with ID: ${subcatID} found!`);
-			console.log(`No Category with ID: ${subcatID} found!`);
+		if (result.nModified == 0) {	// Result from mongo 
+			res.send(`No SubCategory with ID: ${subcat_id} found!`);
+			console.log(`No Category with ID: ${subcat_id} found!`);
 		}
 		else {
 			console.log("SUBCATEGORY UPDATED");
@@ -121,13 +112,13 @@ exports.put = async (req, res) => {
 		
 	}
 	// If no subcat, update the cat:
-	// URL Sample: /category/update/S1lVrJ2O
+	// URL Sample: /category?cat_id=S1lVr
 	else {
-		result = await Category.update({ _id: catID }, postBody);
+		result = await Category.update({ _id: cat_id }, postBody);
 		console.log(result);
 		if (result.nModified == 0) {
-			res.send(`No Category with ID: ${catID} found!`);
-			console.log(`No Category with ID: ${catID} found!`);
+			res.send(`No Category with ID: ${cat_id} found!`);
+			console.log(`No Category with ID: ${cat_id} found!`);
 		}
 		else {
 			console.log("CATEGORY UPDATED");
@@ -140,30 +131,27 @@ exports.put = async (req, res) => {
 
 exports.delete = async (req, res) => {
 
-	// const { catID } = req.params;
-	const { catID, subcatID } = req.query;
-
-	console.log(catID, subcatID);
+	const { cat_id, subcat_id } = req.query;
 
 	let result;
 	// If subcat is provided then delete the subcat of a cat
-	// URL Sample: /category/update/S1lVrJ2OAz?subca
-	if (subcatID) {
+	// URL Sample: /category?cat_id=S1lVr&subcat_id=ahud6
+	if (subcat_id !== 'undefined') {
 		result = await Category.update(
-		{_id: catID},
-		{ $pull : { sub_categories: { _id: subcatID } }}
+		{_id: cat_id},
+		{ $pull : { sub_categories: { _id: subcat_id } }}
 		);
 		console.log(result); 
-		res.send(`Subcategory removed: ${subcatID}`);
+		res.send(`Subcategory removed: ${subcat_id}`);
 	}
 	// If no subcat, delete the cat:
-	// URL Sample: /category/update/S1lVrJ2O
+	// URL Sample: /category?cat_id=S1lVr
 	else{
-		result = await Category.findOneAndRemove( { _id: catID } );
+		result = await Category.findOneAndRemove( { _id: cat_id } );
 		
 		if (result) {
-			console.log(`Category Deleted: ${catID}`);
-			res.send(`Category Deleted: ${catID}`);
+			console.log(`Category Deleted: ${cat_id}`);
+			res.send(`Category Deleted: ${cat_id}`);
 		}
 		else{
 			console.log("No Category Found!");

@@ -5,7 +5,6 @@ const Anchor = mongoose.model('Anchor');
 exports.post = async (req, res) => {
 
 	let postData = req.body;
-	postData.added_dtm = new Date();
 	console.log(postData);
 
 	const anchor = new Anchor (postData);

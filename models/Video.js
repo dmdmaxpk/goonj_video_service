@@ -11,11 +11,11 @@ const videoSchema = new Schema({
     description: String,
     program: String,
     source: String,
+    feed: String,
     category: String,
     sub_category: String,
     // year: { type: Number, default: new Date().getFullYear() },
     added_dtm: { type: Date, default: Date.now },
-    // added_dtm: Date,    //It can be CMS side or here as default(time zone can be different)
     publish_dtm: Date,
     last_modified: Date,
     anchor: String,
@@ -70,6 +70,6 @@ const videoSchema = new Schema({
     //     type: Array
     // },
     
-}, { strict: false })
+}, { strict: true })
 
 module.exports = mongoose.model('Video', videoSchema);

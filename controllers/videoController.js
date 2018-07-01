@@ -19,21 +19,25 @@ exports.post = async (req, res) => {
 
 exports.get = async (req, res) => {
 
-	let { _id, title, category, sub_category, added_dtm, active, feed, anchor, topics } = req.query;
+	let { _id, title, category, sub_category, added_dtm, active, feed, anchor, topics, pinned, skip, limit } = req.query;
 	const query = {};
 
 	if (_id) query._id = _id;
 	if (title) query.title = title;	
 	if (category) query.category = category;
+	if (sub_category) query.sub_category = sub_category;
 	if (anchor) query.anchor = { $in: anchor.split(',') } 
 	if (topics) query.topics = { $in: topics.split(',') } 
 	if (added_dtm) query.added_dtm = added_dtm;
 	if (feed) query.feed = feed;
 	if (active) query.active = active;
+	if (pinned) query.pinned = JSON.parse(pinned);		// Conversion of string to Boolean
+	// if (pinned) query.pinned = pinned;
 
 	console.log(query);
 	
 	let result;
+	// TODO: Skip and Limit queries e.g: https://www.codementor.io/arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr
 	if (_id) {		//If _id then findOne
 		result = await Video.findOne(query); 
 		console.log("1st");
@@ -71,7 +75,7 @@ exports.put = async (req, res) => {
 	console.log("Query: ", query);
 	
 	let postBody = req.body;
-	postBody.last_edited = new Date();
+	postBody.last_modified = new Date();
 	console.log("Body: ", postBody);
 	
 	const result = await Video.updateOne(query, postBody);

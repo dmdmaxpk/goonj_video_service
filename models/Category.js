@@ -11,7 +11,7 @@ const subcatSchema = new Schema({
     },
     name: String,
     description: String,
-    added_dtm: Date,
+    added_dtm: { type: Date, default: Date.now },
     last_edited: Date
 });
 
@@ -20,7 +20,7 @@ const categorySchema = new Schema({
     name: String,
     description: String,
     sub_categories: [subcatSchema],
-    added_dtm: Date,
+    added_dtm: { type: Date, default: Date.now },
     last_edited: Date
 });
 

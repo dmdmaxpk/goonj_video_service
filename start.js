@@ -10,7 +10,7 @@ mongoose.connection.on('error', (err) => {
 // import models
 require('./models/Video');
 require('./models/Category');
-require('./models/Tag');
+require('./models/Program');
 require('./models/Anchor');
 require('./models/Topic');
 require('./models/Channel');
@@ -18,6 +18,7 @@ require('./models/Channel');
 // Start our app!
 const app = require('./app');
 app.set('port', process.env.PORT || 3000);
+
 const server = app.listen(app.get('port'), () => {
   console.log(`Express running → PORT ${server.address().port}`);
 });

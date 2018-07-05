@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const categoryController = require('../controllers/anchorController')
+const anchorController = require('../controllers/anchorController');
 
 
 router.route('/')
-    .get(categoryController.get)
-    .post(categoryController.post)
-    .put(categoryController.put)
-    .delete(categoryController.delete);
+    .get(anchorController.get)
+    .post(anchorController.post)
+    .put(anchorController.put)
+    .delete(anchorController.delete);
 
 
 module.exports = router;

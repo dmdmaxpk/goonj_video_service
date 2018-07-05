@@ -12,6 +12,7 @@ require('./models/Video');
 require('./models/Category');
 require('./models/Program');
 require('./models/Anchor');
+require('./models/Guest');
 require('./models/Topic');
 require('./models/Channel');
 

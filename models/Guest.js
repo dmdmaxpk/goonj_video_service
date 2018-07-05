@@ -3,7 +3,7 @@ const ShortId = require('mongoose-shortid-nodeps');
 const {Schema} = mongoose;
 
 
-const anchorSchema = new Schema({
+const guestSchema = new Schema({
     _id: ShortId,
     name: String,
     avatar: String,
@@ -12,4 +12,4 @@ const anchorSchema = new Schema({
     added_dtm: { type: Date, default: Date.now }
 })
 
-module.exports = mongoose.model('Anchor', anchorSchema);
+module.exports = mongoose.model('Guest', guestSchema);

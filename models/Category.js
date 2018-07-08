@@ -11,8 +11,7 @@ const subcatSchema = new Schema({
     },
     name: String,
     description: String,
-    added_dtm: { type: Date, default: Date.now },
-    last_edited: Date
+    added_dtm: { type: Date, default: Date.now }
 });
 
 const categorySchema = new Schema({
@@ -20,8 +19,7 @@ const categorySchema = new Schema({
     name: String,
     description: String,
     sub_categories: [subcatSchema],
-    added_dtm: { type: Date, default: Date.now },
-    last_edited: Date
+    added_dtm: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Category', categorySchema);

@@ -16,11 +16,12 @@ exports.post = async (req, res) => {
 
 exports.get = async (req, res) => {
 
-	let { _id, name } = req.query;
+	let { _id, name, active } = req.query;
 	const query = {};
 
 	if (name) query.name = name;	
 	if (_id) query._id = _id;
+	if (active) query.active = JSON.parse(active);		// Conversion of string to Boolean
 
 	console.log(query);
 	
@@ -30,7 +31,7 @@ exports.get = async (req, res) => {
 		console.log("1st: Finding 1 channel");
 	}
 	else {
-		result = await Channel.find(query).sort({seq:1});; 		// _id field it has a date embedded in it ... so you can use that to order by 
+		result = await Channel.find(query).sort({seq:1});; 		// Sorting it by seq
 		console.log("2nd: Finding all channel");
 	}
 
@@ -43,7 +44,7 @@ exports.put = async (req, res) => {
 	console.log("Query: ", query);
 	
 	let postBody = req.body;
-	postBody.last_edited = new Date();
+	postBody.last_modified = new Date();
 	console.log("Body: ", postBody);
 	
 	const result = await Channel.updateOne(query, postBody);

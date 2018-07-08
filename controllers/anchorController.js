@@ -43,7 +43,6 @@ exports.put = async (req, res) => {
 	console.log("Query: ", query);
 	
 	let postBody = req.body;
-	postBody.last_edited = new Date();
 	console.log("Body: ", postBody);
 	
 	const result = await Anchor.updateOne(query, postBody);

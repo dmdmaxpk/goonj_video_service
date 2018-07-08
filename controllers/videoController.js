@@ -32,18 +32,19 @@ exports.get = async (req, res) => {
 	if (feed) query.feed = feed;
 	if (active) query.active = active;
 	if (pinned) query.pinned = JSON.parse(pinned);		// Conversion of string to Boolean
-	// if (pinned) query.pinned = pinned;
 
 	console.log(query);
 	
 	let result;
+
 	// TODO: Skip and Limit queries e.g: https://www.codementor.io/arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr
+	
 	if (_id) {		//If _id then findOne
 		result = await Video.findOne(query); 
 		console.log("1st");
 	}
 	else {
-		result = await Video.find(query).sort({added_dtm:-1});; 		// _id field has a date embedded in it, so we can use that to order 
+		result = await Video.find(query).sort({added_dtm:-1});; 		// Sorting by added_dtm
 		console.log("2nd");
 	}
 

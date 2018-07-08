@@ -14,11 +14,10 @@ const channelSchema = new Schema({
     logo: String,
     hls_link: String,
     https_link: String,
-    tags: Array,
     seq: Number,  
     valid: Boolean,
     added_dtm: Date,
-    last_edited: Date
+    last_modified: Date
 });
 
 module.exports = mongoose.model('Channel', channelSchema);

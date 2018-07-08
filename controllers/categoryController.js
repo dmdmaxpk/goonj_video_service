@@ -81,7 +81,6 @@ exports.put = async (req, res) => {
 	const { cat_id, subcat_id } = req.query;
 	
 	let postBody = req.body;
-	postBody.last_edited = new Date();
 	console.log("Body: ", postBody);
 
 	let result;

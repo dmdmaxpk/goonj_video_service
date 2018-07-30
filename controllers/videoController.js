@@ -44,7 +44,7 @@ exports.get = async (req, res) => {
 		console.log("1st");
 	}
 	else {
-		result = await Video.find(query).sort({added_dtm:-1});; 		// Sorting by added_dtm
+		result = await Video.find(query).sort({added_dtm:-1}).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
 		console.log("2nd");
 	}
 

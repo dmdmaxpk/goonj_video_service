@@ -5,7 +5,7 @@ const {Schema} = mongoose;
 
 const channelSchema = new Schema({
     _id: ShortId,
-    name: String,
+    name: { type: String, index: true },
     description: String,
     language: String,
     category: String,
@@ -14,9 +14,9 @@ const channelSchema = new Schema({
     logo: String,
     hls_link: String,
     https_link: String,
-    seq: Number,  
-    valid: Boolean,
-    added_dtm: Date,
+    seq: Number,
+    active: Boolean,
+    added_dtm: { type: Date, default: Date.now },
     last_modified: Date
 });
 

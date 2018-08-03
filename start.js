@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const config = require('./config');
 
 // Connect to our Database:
-mongoose.connect("mongodb://localhost:27017/mongoose");
+mongoose.connect(config.mongoDB);
 
 mongoose.connection.on('error', (err) => {
   console.error(`Error: ${err.message}`);
@@ -18,7 +19,7 @@ require('./models/Channel');
 
 // Start our app!
 const app = require('./app');
-app.set('port', process.env.PORT || 3000);
+app.set('port', config.port);
 
 const server = app.listen(app.get('port'), () => {
   console.log(`Express running → PORT ${server.address().port}`);

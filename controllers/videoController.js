@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Video = mongoose.model('Video');
-
+const axios = require('axios');
+const config = require('../config');
 
 exports.post = async (req, res) => {
 
@@ -9,10 +10,13 @@ exports.post = async (req, res) => {
 
 	let video = new Video (postData);
 	let result = await video.save();
-
-	//After saving it to DB, send the tuple for transcoding service:
-	//axios
 	
+	console.log(result);
+	
+	//After saving it to DB, sending tuple to transcoding service:
+	let transcode_result = await axios.post(config.transcodeServiceUrl, result);
+	console.log(transcode_result.data);
+
 	console.log(`Video Added: ${result.title}`);
     res.send("Video Added!");
 }

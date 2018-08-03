@@ -21,7 +21,6 @@ const videoSchema = new Schema({
     duration: Number,
     file_name: String,
     thumbnail: String,
-    slug: String,
     pinned: { type: Boolean, default: false, index: true },
     active: { type: Boolean, default: false, index: true },
     transcoding_status: { type: Boolean, default: false }

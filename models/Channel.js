@@ -6,6 +6,7 @@ const {Schema} = mongoose;
 const channelSchema = new Schema({
     _id: ShortId,
     name: { type: String, index: true },
+    slug: { type: String, index: true },
     description: String,
     language: String,
     category: String,

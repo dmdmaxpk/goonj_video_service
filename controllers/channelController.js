@@ -16,23 +16,21 @@ exports.post = async (req, res) => {
 
 exports.get = async (req, res) => {
 
-	let { _id, name, active } = req.query;
+	let { _id, slug, active } = req.query;
 	const query = {};
 
-	if (name) query.name = name;	
 	if (_id) query._id = _id;
+	if (slug) query.slug = slug;	
 	if (active) query.active = JSON.parse(active);		// Conversion of string to Boolean
 
 	console.log(query);
 	
 	let result;
-	if (_id) {
+	if (_id || slug) {
 		result = await Channel.findOne(query); 
-		console.log("1st: Finding 1 channel");
 	}
 	else {
-		result = await Channel.find(query).sort({seq:1});; 		// Sorting it by seq
-		console.log("2nd: Finding all channel");
+		result = await Channel.find(query).sort({seq:1}); 		// Sorting it by seq
 	}
 
 	res.send(result);

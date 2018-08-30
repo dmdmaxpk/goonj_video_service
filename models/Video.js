@@ -16,7 +16,7 @@ const videoSchema = new Schema({
     publish_dtm: Date,
     last_modified: Date,
     anchor: { type: String, index: true },
-    guests: Array,
+    guests: { type: Array, index: true },
     topics: { type: Array, index: true },
     duration: Number,
     file_name: String,

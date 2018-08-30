@@ -6,19 +6,18 @@ const config = require('../config');
 exports.post = async (req, res) => {
 
     let postData = req.body;
-	console.log(postData);
 
 	let video = new Video (postData);
 	let result = await video.save();
 	
-	console.log(result);
+	console.log(`Video Added: ${result._id}`);
 	
 	//After saving it to DB, sending tuple to transcoding service:
-	let transcode_result = await axios.post(config.transcodeServiceUrl, result);
-	console.log(transcode_result.data);
+	axios.post(config.transcodeServiceUrl, result)
+	.then( response => console.log(response.data))
+	.catch( error => console.log(error))
 
-	console.log(`Video Added: ${result.title}`);
-    res.send("Video Added!");
+    res.send(`Video Added: ${result._id}`);
 }
 
 exports.get = async (req, res) => {
@@ -53,7 +52,7 @@ exports.get = async (req, res) => {
 	}
 
 	res.send(result);
-
+	
 	// SAMPLES:
 	// select only the adventures name and length
 	// Video.findById(id, 'name length').exec(callback);

@@ -12,6 +12,9 @@ exports.post = async (req, res) => {
 	
 	console.log(`Video Added: ${result._id}`);
 	
+	// Adding operator name for transcoding service:
+	result._doc.operator = 'telenor';	// _doc (field in object, IDK!!)
+
 	//After saving it to DB, sending tuple to transcoding service:
 	axios.post(config.transcodeServiceUrl, result)
 	.then( response => console.log(response.data))
@@ -44,11 +47,11 @@ exports.get = async (req, res) => {
 	
 	if (_id) {		//If _id then findOne
 		result = await Video.findOne(query); 
-		console.log("1st");
+		console.log(`GET Video by ID=${_id}`);
 	}
 	else {
 		result = await Video.find(query).sort({added_dtm:-1}).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
-		console.log("2nd");
+		console.log(`GET All Videos`);
 	}
 
 	res.send(result);

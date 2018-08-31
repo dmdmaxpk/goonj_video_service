@@ -2,7 +2,7 @@ const env = process.env.NODE_ENV || 'development';
 
 let config = {
     development: {
-        port: '3003',
+        port: '3000',
     },
     staging: {
         port: '3000',
@@ -19,7 +19,7 @@ if (env === 'staging') config = config.staging;
 if (env === 'production') config = config.production;
 
 // Common configs
-config.mongoDB = 'mongodb://localhost:27017/mongoose';
+config.mongoDB = 'mongodb://localhost:27017/mongo';
 config.transcodeServiceUrl = 'http://10.3.7.12:3011/v1/api/transcode';
 
 module.exports = config;

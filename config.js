@@ -19,7 +19,7 @@ if (env === 'staging') config = config.staging;
 if (env === 'production') config = config.production;
 
 // Common configs
-config.mongoDB = 'mongodb://localhost:27017/mongo';
+config.mongoDB = 'mongodb://localhost:27017/telenor';
 config.transcodeServiceUrl = 'http://10.3.7.12:3011/v1/api/transcode';
 
 module.exports = config;

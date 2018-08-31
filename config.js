@@ -13,7 +13,7 @@ let config = {
     },
     production: {
         port: '3000',
-        mongoDB: 'mongodb://RootAdmin:password@10.3.7.101:27017/telenor?authSource=admin',
+        mongoDB: 'mongodb://RootAdmin:password@10.3.7.101:27017/telenor?authSource=admin&replicaSet=prdreplica1',
         transcodeServiceUrl: 'http://10.3.7.12:3011/v1/api/transcode'
     }
 };

@@ -5,10 +5,10 @@ const {Schema} = mongoose;
 
 const videoSchema = new Schema({
     _id: { type: ShortId, alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', len: 4, retries: 4 },  //Generating shortid instead of uuid
-    title: String,
+    title: { type: String, trim: true },
     description: String,
-    program: String,
-    source: String,
+    program: { type: String, trim: true },
+    source: { type: String, trim: true },
     feed: { type: String, index: true },
     category: String,
     sub_category: String,

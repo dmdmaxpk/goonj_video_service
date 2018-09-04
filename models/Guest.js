@@ -5,7 +5,7 @@ const {Schema} = mongoose;
 
 const guestSchema = new Schema({
     _id: ShortId,
-    name: String,
+    name: { type: String, trim: true },
     avatar: String,
     biodata: String,
     weightage: Number,      // Can setup from 1-10 based on high to low, then sort them accordingly, default can be 0

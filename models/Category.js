@@ -9,14 +9,14 @@ const subcatSchema = new Schema({
         type: String,
         'default': shortid.generate     //Because the mongoose shortid does not work on nested schemas
     },
-    name: String,
+    name: { type: String, trim: true },
     description: String,
     added_dtm: { type: Date, default: Date.now }
 });
 
 const categorySchema = new Schema({
     _id: ShortId,
-    name: String,
+    name: { type: String, trim: true },
     description: String,
     sub_categories: [subcatSchema],
     added_dtm: { type: Date, default: Date.now }

@@ -30,7 +30,7 @@ exports.get = async (req, res) => {
 		console.log("1st: Finding 1 program");
 	}
 	else {
-		result = await Program.find(query).sort({_id:-1});
+		result = await Program.find(query).sort({weightage:-1});
 		console.log("2nd: Finding all programs");
 	}
 

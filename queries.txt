@@ -1,0 +1,26 @@
+Finding range for past 24 hours:
+db.system.profile.find({ 
+  "timestamp" : { 
+    $lt: new Date(), 
+    $gte: new Date(new Date().setDate(new Date().getDate()-1))
+  }   
+})
+
+Finding by year wise:
+
+db.test.aggregate(
+ { "$project": {
+      "year":{"$year":"$created_at"},
+      "month":{"$month":"$created_at"},      
+ },
+ { "$match":{ 
+      "year" :2015,
+      "month": 3       
+   }
+ })
+
+Also $year: https://docs.mongodb.com/manual/reference/operator/aggregation/year/
+
+Shortid Replace: 
+// shortid
+// shortid.generate(). OR replace(/-|_/g, '~')

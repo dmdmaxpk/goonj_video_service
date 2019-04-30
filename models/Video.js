@@ -4,7 +4,7 @@ const {Schema} = mongoose;
 
 
 const videoSchema = new Schema({
-    _id: { type: ShortId, alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', len: 4, retries: 4 },  //Generating shortid instead of uuid
+    _id: { type: ShortId, alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', len: 4, retries: 4 },  // Generating shortid instead of uuid also neglecting special symbols
     title: { type: String, trim: true },
     description: String,
     program: { type: String, trim: true },

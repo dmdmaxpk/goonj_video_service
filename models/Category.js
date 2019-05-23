@@ -17,7 +17,6 @@ const subcatSchema = new Schema({
 const categorySchema = new Schema({
     _id: ShortId,
     name: { type: String, trim: true },
-    description: String,
     sub_categories: [subcatSchema],
     added_dtm: { type: Date, default: Date.now }
 });

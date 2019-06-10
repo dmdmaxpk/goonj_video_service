@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 const Program = mongoose.model('Program');
 
 
+// CREATE
 exports.post = async (req, res) => {
 
     const postData = req.body;
 	console.log(postData);
 
+	// Saving document
 	let program = new Program (postData);
 	let result = await program.save();
 	
@@ -14,6 +16,7 @@ exports.post = async (req, res) => {
     res.send("Program Added!");
 }
 
+// READ
 exports.get = async (req, res) => {
 
 	let { _id, name } = req.query;
@@ -22,28 +25,25 @@ exports.get = async (req, res) => {
 	if (name) query.name = name;	
 	if (_id) query._id = _id;
 
-	console.log(query);
-	
 	let result;
+	// Single document
 	if (_id) {
-		result = await Program.findOne(query); 
-		console.log("1st: Finding 1 program");
+		result = await Program.findOne(query); 		// Find document on provided id
 	}
+	// All documents
 	else {
-		result = await Program.find(query).sort({weightage:-1});
-		console.log("2nd: Finding all programs");
+		result = await Program.find(query).sort({ weightage: -1 });		// Sorting results by weightage
 	}
 
 	res.send(result);
 }
 
+// UPDATE
 exports.put = async (req, res) => {
 
 	const query = { _id: req.query._id };
-	console.log("Query: ", query);
 	
 	let postBody = req.body;
-	console.log("Body: ", postBody);
 	
 	const result = await Program.updateOne(query, postBody);
 
@@ -57,16 +57,18 @@ exports.put = async (req, res) => {
 	}
 }
 
+// DELETE
 exports.delete = async (req, res) => {
+
 	const { _id } = req.query;
-	const result = await Program.findOneAndRemove( { _id } );
-	console.log(result);
+	const result = await Program.findOneAndRemove({ _id });
+
 	if (result) {
 		console.log(`Program ID: ${_id}, Name: ${result.name} Deleted!`);
 		res.send(`Program ID: ${_id}, Name: ${result.name} Deleted!`);
 	}
 	else {
-		console.log('No program with this ID found!');
-		res.send('No program with this ID found!');
+		console.log(`No program with this ID: ${_id} found!`);
+		res.send(`No program with this ID: ${_id} found!`);
 	}
 }

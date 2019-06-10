@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 const Topic = mongoose.model('Topic');
 
 
+// CREATE
 exports.post = async (req, res) => {
 
 	let postData = req.body;
 	console.log(postData);
 
+	// Saving document
 	const topic = new Topic (postData);
 	const result = await topic.save();
 	
@@ -14,6 +16,7 @@ exports.post = async (req, res) => {
     res.send("Topic Added!");
 }
 
+// READ
 exports.get = async (req, res) => {
 
 	const { _id, name } = req.query;
@@ -22,28 +25,25 @@ exports.get = async (req, res) => {
 	if (name) query.name = name;	
 	if (_id) query._id = _id;
 
-	console.log(query);
-	
 	let result;
+	// Single document
 	if (_id) {
-		result = await Topic.findOne(query); 
-		console.log("1st: Finding 1 topic");
+		result = await Topic.findOne(query);	// Find document on provided id
 	}
+	// All documents
 	else {
-		result = await Topic.find(query).sort({weightage:-1});; 		// Sort by highest weightage
-		console.log("2nd: Finding all topics");
+		result = await Topic.find(query).sort({ weightage: -1 });	// Sort by highest weightage
 	}
 
 	res.send(result);
 }
 
+// UPDATE
 exports.put = async (req, res) => {
 
 	const query = { _id: req.query._id };
-	console.log("Query: ", query);
 	
 	let postBody = req.body;
-	console.log("Body: ", postBody);
 	
 	const result = await Topic.updateOne(query, postBody);
 
@@ -55,9 +55,9 @@ exports.put = async (req, res) => {
 		console.log(`TOPIC Updated!`);
 		res.send(`TOPIC Updated!`);
 	}
-
 }
 
+// DELETE
 exports.delete = async (req, res) => {
 	const { _id } = req.query;
 	const result = await Topic.findOneAndRemove( { _id } );

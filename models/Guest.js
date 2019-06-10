@@ -1,3 +1,4 @@
+// Guests are not used after redesign. Can be removed.
 const mongoose = require('mongoose');
 const ShortId = require('mongoose-shortid-nodeps');
 const {Schema} = mongoose;

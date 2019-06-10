@@ -3,10 +3,13 @@ const Video = mongoose.model('Video');
 const axios = require('axios');
 const config = require('../config');
 
+
+// CREATE
 exports.post = async (req, res) => {
 
     let postData = req.body;
 
+	// Saving document
 	let video = new Video (postData);
 	let result = await video.save();
 	
@@ -15,14 +18,15 @@ exports.post = async (req, res) => {
 	// Adding operator name for transcoding service:
 	result._doc.operator = 'telenor';	// _doc (field in object, IDK!!)
 
-	//After saving it to DB, sending tuple to transcoding service:
+	// After saving it to DB, sending tuple to transcoding service:
 	axios.post(config.transcodeServiceUrl, result)
-	.then( response => console.log(response.data))
-	.catch( error => console.log(error))
+		.then( response => console.log(response.data) )
+		.catch( error => console.log(error) )
 
     res.send(`Video Added: ${result._id}`);
 }
 
+// READ
 exports.get = async (req, res) => {
 
 	let { _id, title, category, sub_category, added_dtm, active, feed, anchor, topics, pinned, skip, limit } = req.query;
@@ -39,53 +43,30 @@ exports.get = async (req, res) => {
 	if (active) query.active = active;
 	if (pinned) query.pinned = JSON.parse(pinned);		// Conversion of string to Boolean
 
-	console.log(query);
-	
 	let result;
-
-	// TODO: Skip and Limit queries e.g: https://www.codementor.io/arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr
 	
-	if (_id) {		//If _id then findOne
+	// Single document
+	if (_id) {
 		result = await Video.findOne(query); 
 		console.log(`GET Video by ID=${_id}`);
 	}
+	// All documents
 	else {
-		result = await Video.find(query).sort({added_dtm:-1}).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
-		console.log(`GET All Videos`);
+		result = await Video.find(query).sort({ added_dtm: -1 }).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
 	}
 
 	res.send(result);
-	
-	// SAMPLES:
-	// select only the adventures name and length
-	// Video.findById(id, 'name length').exec(callback);
-
-	// include all properties except for `length`
-	// Video.findById(id, '-length').exec(function (err, video) {});
-
-	// FOR PREFERENCE:
-	// The following example retrieves all documents from the inventory collection where status equals either "A" or "D": (IN AN ARRAY)
-	// db.inventory.find( { status: { $in: [ "A", "D" ] } } )
-
-	// AND in Mongo:
-	// The following example retrieves all documents in the inventory collection where the status equals "A" and qty is less than ($lt) 30:
-	// db.inventory.find( { status: "A", qty: { $lt: 30 } } )
-
-	// OR in Mongo:
-	// The following example retrieves all documents in the collection where the status equals "A" or qty is less than ($lt) 30:
-	// db.inventory.find( { $or: [ { status: "A" }, { qty: { $lt: 30 } } ] } )
 }
 
+// UPDATE
 exports.put = async (req, res) => {
 
 	const query = { _id: req.query._id };
-	console.log("Query: ", query);
 	
 	let postBody = req.body;
-	postBody.last_modified = new Date();
-	console.log("Body: ", postBody);
+	postBody.last_modified = new Date();	// Adding last_modified on video update
 	
-	const result = await Video.updateOne(query, postBody);
+	const result = await Video.updateOne(query, postBody);		// Updating values
 	
 	if (result.nModified == 0) {
 		console.log('No Video with this ID found!');
@@ -97,11 +78,12 @@ exports.put = async (req, res) => {
 	}
 }
 
+// DELETE
 exports.delete = async (req, res) => {
 
 	const query = { _id: req.query._id };
 
-	const result = await Video.findOneAndRemove( query );
+	const result = await Video.findOneAndRemove( query );	// Removing document based on the _id provided
 	
 	if (result) {
 		console.log(`Video _id: ${query._id} Deleted!`);

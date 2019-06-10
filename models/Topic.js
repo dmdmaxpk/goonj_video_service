@@ -6,7 +6,7 @@ const {Schema} = mongoose;
 const topicSchema = new Schema({
     _id: ShortId,
     name: { type: String, trim: true },
-    weightage: Number,      // From 1-10 based on high to low priority, 0=lowest and 10=highest
+    weightage: Number,      // For setting the sequence
     added_dtm: { type: Date, default: Date.now }
 });
 

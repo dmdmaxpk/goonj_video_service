@@ -4,6 +4,7 @@ const shortid = require('shortid');
 const {Schema} = mongoose;
 
 
+// Sub category can be removed as they were removed from frontend in new design (Just keeping in case they change their mind)
 const subcatSchema = new Schema({ 
     _id: {
         type: String,

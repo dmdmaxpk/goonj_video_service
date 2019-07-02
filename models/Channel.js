@@ -14,6 +14,7 @@ const channelSchema = new Schema({
     hls_link: String,
     seq: Number,                            // Sequence for frontend
     active: Boolean,
+    ad_tag: {type: String, default: ""},                         // Ad tag from channel to display ads on their videos/live
     added_dtm: { type: Date, default: Date.now },
     last_modified: Date
 });

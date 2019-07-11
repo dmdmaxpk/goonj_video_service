@@ -17,7 +17,7 @@ deployStaging:
     variables:
       - $CI_COMMIT_REF_NAME == "staging"
 
-
+# Deploy on Production Manually from pipelines
 deployProduction:
   stage: deploy
   script:

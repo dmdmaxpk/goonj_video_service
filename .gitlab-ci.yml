@@ -1,23 +1,20 @@
 stages:
   - build
-  - cleanup_build
   - test
   - deploy
-  - cleanup
 
-deploy_staging:
+# Deply on commit to staging branch
+deployStaging:
   stage: deploy
   script:
     - cd /opt/deployable/ansible/
     - ansible-playbook -i inv_staging goonj_video_service.yml -e 'branchName=staging'
   environment:
     name: staging
-  except:
-    - master
-  when: manual
+  when: pushes
   
 
-deploy_production:
+deployProduction:
   stage: deploy
   script:
     - cd /opt/deployable/ansible/

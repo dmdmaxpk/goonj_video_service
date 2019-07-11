@@ -3,7 +3,7 @@ stages:
   - test
   - deploy
 
-# Deply on commit to staging branch
+# Deply on push to staging branch
 deployStaging:
   stage: deploy
   script:
@@ -11,7 +11,9 @@ deployStaging:
     - ansible-playbook -i inv_staging goonj_video_service.yml -e 'branchName=staging'
   environment:
     name: staging
-  when: pushes
+  only: 
+    - pushes
+    - $CI_COMMIT_REF_NAME == "staging"
   
 
 deployProduction:

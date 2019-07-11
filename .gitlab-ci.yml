@@ -8,7 +8,7 @@ deployStaging:
   stage: deploy
   script:
     - cd /opt/deployable/ansible/
-    - ansible-playbook -i inv_staging goonj_video_service.yml -e 'branchName=staging' --vault-password-file=vault.crypt
+    - ansible-playbook -i inv_staging goonj_video_service.yml  --vault-password-file=vault.crypt -e 'branchName=staging'
   environment:
     name: staging
   only:
@@ -25,7 +25,7 @@ deployProduction:
   stage: deploy
   script:
     - cd /opt/deployable/ansible/
-    - ansible-playbook -i inv_production_dmd_com_db goonj_video_service.yml -e 'branchName=master'
+    - ansible-playbook -i inv_production_dmd_com_db goonj_video_service.yml --vault-password-file=vault.crypt -e 'branchName=master'
   environment:
     name: production
   only:

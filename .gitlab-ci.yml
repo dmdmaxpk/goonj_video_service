@@ -8,7 +8,7 @@ deployStaging:
   stage: deploy
   script:
     - cd /opt/deployable/ansible/
-    - ansible-playbook -i inv_staging goonj_video_service.yml -e 'branchName=staging' --vault-password-file=valut.crypt
+    - ansible-playbook -i inv_staging goonj_video_service.yml -e 'branchName=staging' --vault-password-file=vault.crypt
   environment:
     name: staging
   only:

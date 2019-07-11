@@ -11,11 +11,12 @@ deployStaging:
     - ansible-playbook -i inv_staging goonj_video_service.yml -e 'branchName=staging'
   environment:
     name: staging
-  only: 
-    - $CI_COMMIT_REF_NAME == "staging"
-    - push
+  only:
+    refs:
+      - staging
+      - push
   
-# Deploy on Pruduction manually from Pipelines
+
 deployProduction:
   stage: deploy
   script:

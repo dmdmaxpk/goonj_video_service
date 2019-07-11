@@ -16,6 +16,9 @@ deployStaging:
       - branches
     variables:
       - $CI_COMMIT_REF_NAME == "staging"
+  except:
+    changes:
+      - .gitlab-ci.yml
 
 # Deploy on Production Manually from pipelines
 deployProduction:

@@ -1,0 +1,27 @@
+stages:
+  - build
+  - test
+  - deploy
+
+# Deply on push to staging branch
+deployStaging:
+  stage: deploy
+  script:
+    - cd /opt/deployable/ansible/
+    - ansible-playbook -i inv_staging goonj_video_service.yml -e 'branchName=staging'
+  environment:
+    name: staging
+  only: 
+    - $CI_COMMIT_REF_NAME == "staging"
+  
+
+deployProduction:
+  stage: deploy
+  script:
+    - cd /opt/deployable/ansible/
+    - ansible-playbook -i inv_production_dmd_com_db goonj_video_service.yml -e 'branchName=master'
+  environment:
+    name: production
+  only:
+    - master
+  when: manual

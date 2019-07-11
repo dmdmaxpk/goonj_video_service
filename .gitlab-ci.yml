@@ -14,7 +14,7 @@ deployStaging:
   only: 
     - $CI_COMMIT_REF_NAME == "staging"
   
-
+# Deploy on Pruduction manually from Pipelines
 deployProduction:
   stage: deploy
   script:

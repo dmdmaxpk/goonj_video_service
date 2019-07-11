@@ -13,9 +13,10 @@ deployStaging:
     name: staging
   only:
     refs:
-      - staging
-      - push
-  
+      - branches
+    variables:
+      - $CI_COMMIT_REF_NAME == "staging"
+
 
 deployProduction:
   stage: deploy

@@ -12,7 +12,6 @@ deployStaging:
   environment:
     name: staging
   only: 
-    - pushes
     - $CI_COMMIT_REF_NAME == "staging"
   
 

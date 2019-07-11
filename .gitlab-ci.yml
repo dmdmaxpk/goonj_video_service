@@ -13,6 +13,7 @@ deployStaging:
     name: staging
   only: 
     - $CI_COMMIT_REF_NAME == "staging"
+    - push
   
 # Deploy on Pruduction manually from Pipelines
 deployProduction:

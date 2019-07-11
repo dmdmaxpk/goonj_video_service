@@ -1,6 +1,6 @@
 const env = process.env.NODE_ENV || 'development';
 
-// environment is picked from either system envs or from this file in above directive.
+// application gets environment from either system envs or from this file in above directive.
 
 let config = {
     development: {

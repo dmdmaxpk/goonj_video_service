@@ -13,10 +13,12 @@ exports.post = async (req, res) => {
             "views_count" : 1
         }
     };
-    let options = { new: true, upsert: true, setDefaultsOnInsert: true }
 
-    const result = await Channel.findOneAndUpdate(conditions, update, options);		// Updating values
-	res.send({"views_count": result._views_count});
+    const result = await Channel.findOneAndUpdate(conditions, update);		// Updating values
+    if(result)
+	    res.send({"views_count": result.views_count});
+    else
+        res.send({"status": "500"});
 }
 
 // READ
@@ -24,5 +26,8 @@ exports.get = async (req, res) => {
 
     let conditions = {_id: req.body.id};
 	const result = await Channel.findOne(conditions);
-    res.send({"views_count": result._views_count});
+    if(result)
+        res.send({"views_count": result.views_count});
+    else
+        res.send({"status": "500"});
 }

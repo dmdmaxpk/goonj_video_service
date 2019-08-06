@@ -16,7 +16,10 @@ exports.post = async (req, res) => {
     let options = { new: true, upsert: true, setDefaultsOnInsert: true }
 
     const result = await Video.findOneAndUpdate(conditions, update, options);		// Updating values
-	res.send({"views_count": result._views_count});
+    if(result)
+        res.send({"views_count": result.views_count});
+    else
+        res.send({"status": "500"});
 }
 
 // READ
@@ -24,5 +27,8 @@ exports.get = async (req, res) => {
 
     let conditions = {_id: req.body.id};
 	const result = await Video.findOne(conditions);
-    res.send({"views_count": result._views_count});
+    if(result)
+        res.send({"views_count": result.views_count});
+    else
+        res.send({"status": "500"});
 }

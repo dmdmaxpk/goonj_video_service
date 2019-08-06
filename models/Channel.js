@@ -15,6 +15,7 @@ const channelSchema = new Schema({
     seq: Number,                            // Sequence for frontend
     active: Boolean,
     ad_tag: {type: String, default: ""},                         // Ad tag from channel to display ads on their videos/live
+    views_count: {type: Number, default: 0},
     added_dtm: { type: Date, default: Date.now },
     last_modified: Date
 });

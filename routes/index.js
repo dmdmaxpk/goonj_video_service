@@ -12,4 +12,8 @@ router.use('/guest',    require('./guestRoutes'));
 router.use('/topic',    require('./topicRoutes'));
 router.use('/channel',  require('./channelRoutes'));
 
+// For Views
+router.use('/videoViews',  require('./videoViewsCountRoutes'));
+router.use('/channelViews',  require('./channelViewsCountRoutes'));
+
 module.exports = router;

@@ -4,7 +4,8 @@ const videoViewCountController = require('../controllers/videoViewsCountControll
 
 
 router.route('/')
-    .post(videoViewCountController.post);
+    .post(videoViewCountController.post)
+    .get(videoViewCountController.get);
 
 
 module.exports = router;

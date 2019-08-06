@@ -4,7 +4,8 @@ const channelViewsCountController = require('../controllers/channelViewsCountCon
 
 
 router.route('/')
-    .post(channelViewsCountController.post);
+    .post(channelViewsCountController.post)
+    .get(channelViewsCountController.get);
 
 
 module.exports = router;

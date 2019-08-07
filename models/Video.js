@@ -18,6 +18,7 @@ const videoSchema = new Schema({
     anchor: { type: String, index: true },
     guests: { type: Array, index: true },       // Was used in old design, should be removed
     topics: { type: Array, index: true },
+    views_count: {type: Number, default: 0},
     duration: Number,                           // Duration of the video in seconds
     file_name: String,
     thumbnail: String,

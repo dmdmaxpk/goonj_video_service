@@ -10,14 +10,15 @@ exports.post = async (req, res) => {
     let postData = req.body;
 
 	// Saving document
+	console.log("Post Data",postData);
 	let video = new Video (postData);
+	console.log("video",video);
 	let result = await video.save();
 	
 	console.log(`Video Added: ${result._id}`);
 	
 	// Adding operator name for transcoding service:
 	result._doc.operator = 'telenor';	// _doc (field in object, IDK!!)
-
 	// After saving it to DB, sending tuple to transcoding service:
 	axios.post(config.transcodeServiceUrl, result)
 		.then( response => console.log(response.data) )
@@ -62,7 +63,7 @@ exports.get = async (req, res) => {
 exports.put = async (req, res) => {
 
 	const query = { _id: req.query._id };
-	
+	console.log("query",query);
 	let postBody = req.body;
 	postBody.last_modified = new Date();	// Adding last_modified on video update
 	

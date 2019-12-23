@@ -9,8 +9,8 @@ let config = {
         transcodeServiceUrl: 'http://10.3.7.12:3011/transcode'
     },
     staging: {
-        port: '3000',
-        mongoDB: 'mongodb://localhost:27017/telenor',
+        port: '3010',
+        mongoDB: 'mongodb://localhost:27017/telenor-test',
         transcodeServiceUrl: 'http://10.3.7.12:3011/transcode'
     },
     production: {

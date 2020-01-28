@@ -8,6 +8,7 @@ const config = require('../config');
 exports.post = async (req, res) => {
 
     let conditions = {_id: req.body.id};
+    console.log("conditions", conditions);
     let update = {
         $inc: {
             "views_count" : 1

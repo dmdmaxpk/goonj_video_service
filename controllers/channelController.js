@@ -39,6 +39,32 @@ exports.get = async (req, res) => {
 	res.send(result);
 }
 
+// READ
+exports.getChannelCategories = async (req, res) => {
+
+	let { _id, slug, active } = req.query;
+	const query = {};
+
+	if (_id) query._id = _id;
+	if (slug) query.slug = slug;	
+	if (active) query.active = JSON.parse(active);		// Conversion of string to Boolean
+
+	let result;
+	// All documents
+	try {
+		result = await Channel.find({}).select('category hls_link').sort({ seq: 1 }); 		// Sorting results by seq
+		console.log("[getChannelCategories][result]",result);
+		let response = {};
+		result.map(res => {
+			response[res.hls_link.split('.')[0]] = res.category;
+		})
+		res.send(response);
+	} catch(err) {
+		res.status(501).send(err);
+	}
+	
+}
+
 // UPDATE
 exports.put = async (req, res) => {
 

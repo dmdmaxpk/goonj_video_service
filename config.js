@@ -1,21 +1,19 @@
-const env = process.env.NODE_ENV || 'development';
-
-// application gets environment from either system envs or from this file in above line.
+const env = process.env.NODE_ENV || 'production';
 
 let config = {
     development: {
         port: '3000',
-        mongoDB: 'mongodb://localhost:27017/telenor',
+        mongoDB: 'mongodb://localhost:27017/telenor_v2',
         transcodeServiceUrl: 'http://10.3.7.12:3011/transcode'
     },
     staging: {
-        port: '3010',
-        mongoDB: 'mongodb://localhost:27017/telenor-test',
+        port: '3001',
+        mongoDB: 'mongodb://localhost:27017/telenor_v2',
         transcodeServiceUrl: 'http://10.3.7.12:3011/transcode'
     },
     production: {
         port: '3000',
-        mongoDB: 'mongodb://RootAdmin:password@10.3.7.101:27017/telenor?authSource=admin&replicaSet=prdreplica1',
+        mongoDB: 'mongodb://RootAdmin:password@10.3.7.101:27017/telenor_v2?authSource=admin&replicaSet=prdreplica1',
         transcodeServiceUrl: 'http://10.3.7.12:3011/transcode'
     }
 };

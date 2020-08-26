@@ -3,8 +3,10 @@ const SubSubCategory = mongoose.model('SubSubCategory');
 
 // CREATE
 exports.post = async (req, res) => {
-	let SubSubCategory = new SubSubCategory(req.body);
-	result = await SubSubCategory.save();
+	let postData = req.body;
+
+	let subCat = new SubSubCategory(postData);
+	result = await subCat.save();
 
 	console.log(`SubSubCategory: "${postData.name}" ADDED!!`);
 	res.send(`SubSubCategory: "${postData.name}" ADDED!!`);

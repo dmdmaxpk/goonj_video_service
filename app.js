@@ -26,6 +26,9 @@ require('./models/Guest');
 require('./models/Topic');
 require('./models/Channel');
 
+require('./models/SubCategory');
+require('./models/SubSubCategory');
+
 // Import routes
 app.use('/', require('./routes/index'));
 

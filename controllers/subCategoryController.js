@@ -14,14 +14,15 @@ exports.post = async (req, res) => {
 
 // READ
 exports.get = async (req, res) => {
-	const { id, name } = req.query;		// cat_id = SubCategory id, subcat_id = subSubCategory id, cat_name = SubCategory name (provision for searching on SubCategory name)
+	const { id, name, category_name } = req.query;		// cat_id = SubCategory id, subcat_id = subSubCategory id, cat_name = SubCategory name (provision for searching on SubCategory name)
 	let query = {};
 
 	if (id) query._id = id;
 	if (name) query.name = name;
+	if (category_name) query.category_name = category_name;
 	
 	if(id || name){
-		let result = await SubCategory.findOne(query);
+		let result = await SubCategory.find(query);
 		console.log("-----Finding SubCategory");
 		res.send(result);
 	}else{

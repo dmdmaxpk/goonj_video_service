@@ -10,8 +10,9 @@ const videoSchema = new Schema({
     program: { type: String, trim: true },
     source: { type: String, trim: true },       // Channel or the origin of the video
     feed: { type: String, index: true },        // Was used in old design, should be removed
-    category: String,
-    sub_category: String,                       // Was used in old design, should be removed
+    category: { type: String, index: true },
+    sub_category: { type: String, index: true },
+    sub_sub_category: { type: String, index: true },
     added_dtm: { type: Date, default: Date.now, index: true },
     publish_dtm: Date,                          // The time when the curators publish/active it after transcoding
     last_modified: Date,

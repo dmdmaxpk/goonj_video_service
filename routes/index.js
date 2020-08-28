@@ -6,6 +6,8 @@ router.get('/', (req, res) => res.send("Video Microservice"));
 
 router.use('/video',    require('./videoRoutes'));
 router.use('/category', require('./categoryRoutes'));
+router.use('/subcat', require('./subCategoryRoutes'));
+
 router.use('/program',  require('./programRoutes'));
 router.use('/anchor',   require('./anchorRoutes'));
 router.use('/guest',    require('./guestRoutes'));

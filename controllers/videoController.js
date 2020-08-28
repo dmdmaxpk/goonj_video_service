@@ -30,13 +30,15 @@ exports.post = async (req, res) => {
 // READ
 exports.get = async (req, res) => {
 
-	let { _id, title, category, sub_category, added_dtm, active, feed, anchor, topics, pinned, skip, limit } = req.query;
+	let { _id, title, category, sub_category, sub_sub_category, added_dtm, active, feed, anchor, topics, pinned, skip, limit } = req.query;
 	const query = {};
 
 	if (_id) query._id = _id;
 	if (title) query.title = title;	
 	if (category) query.category = category;
 	if (sub_category) query.sub_category = sub_category;
+	if (sub_sub_category) query.sub_sub_category = sub_sub_category;
+
 	if (anchor) query.anchor = { $in: anchor.split(',') } 
 	if (topics) query.topics = { $in: topics.split(',') } 
 	if (added_dtm) query.added_dtm = added_dtm;

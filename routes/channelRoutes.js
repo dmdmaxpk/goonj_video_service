@@ -10,4 +10,7 @@ router.route('/')
     .delete(channelController.delete);
 
     
+router.route('/getchannelcats')
+    .get(channelController.getChannelCategories)
+
 module.exports = router;

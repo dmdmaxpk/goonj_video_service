@@ -21,7 +21,7 @@ exports.get = async (req, res) => {
 	if (name) query.name = name;
 	if (category_name) query.category_name = category_name;
 	
-	if(id || name){
+	if(id || name || category_name){
 		let result = await SubCategory.find(query);
 		console.log("-----Finding SubCategory");
 		res.send(result);

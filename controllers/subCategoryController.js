@@ -22,11 +22,11 @@ exports.get = async (req, res) => {
 	if (category_name) query.category_name = category_name;
 	
 	if(id || name || category_name){
-		let result = await SubCategory.find(query);
+		let result = await SubCategory.find(query).sort({ added_dtm: -1 });
 		console.log("-----Finding SubCategory");
 		res.send(result);
 	}else{
-		let result = await SubCategory.find(query).sort({ name: 1 });	//Sorting by ascending order of the name 
+		let result = await SubCategory.find(query).sort({ added_dtm: -1 });	//Sorting by ascending order of the name 
 		console.log("-----Finding All sub-categories");
 		res.send(result);
 	}

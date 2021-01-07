@@ -14,7 +14,7 @@ const channelSchema = new Schema({
     hls_link: String,
     seq: Number,                            // Sequence for frontend
     active: Boolean,
-    package_id: ["QDfC","QDfG"],
+    package_id: {type: Array, default: ["QDfC","QDfG"]},
     ad_tag: {type: String, default: ""},                         // Ad tag from channel to display ads on their videos/live
     views_count: {type: Number, default: 0},
     added_dtm: { type: Date, default: Date.now },

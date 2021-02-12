@@ -3,12 +3,12 @@ const env = process.env.NODE_ENV || 'production';
 let config = {
     development: {
         port: '3000',
-        mongoDB: 'mongodb://10.3.7.101:27017/telenor_v2',
+        mongoDB: 'mongodb://localhost:27017/telenor_v2',
         transcodeServiceUrl: 'http://10.3.7.12:3011/transcode'
     },
     staging: {
         port: '3001',
-        mongoDB: 'mongodb://10.3.7.101:27017telenor_v2',
+        mongoDB: 'mongodb://localhost:27017/telenor_v2',
         transcodeServiceUrl: 'http://10.3.7.12:3011/transcode'
     },
     production: {

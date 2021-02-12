@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Channel = mongoose.model('Channel');
 
-
 // CREATE
 exports.post = async (req, res) => {
 

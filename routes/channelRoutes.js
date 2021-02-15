@@ -13,4 +13,7 @@ router.route('/')
 router.route('/getchannelcats')
     .get(channelController.getChannelCategories)
 
+router.route('/channel-category-wise')
+    .get(channelController.channelCategoryWise)
+
 module.exports = router;

@@ -13,6 +13,7 @@ router.use('/anchor',   require('./anchorRoutes'));
 router.use('/guest',    require('./guestRoutes'));
 router.use('/topic',    require('./topicRoutes'));
 router.use('/channel',  require('./channelRoutes'));
+router.use('/banner',  require('./bannerRoutes'));
 
 // For Views
 router.use('/videoViews',  require('./videoViewsCountRoutes'));

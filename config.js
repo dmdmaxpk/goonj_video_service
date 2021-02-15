@@ -1,4 +1,4 @@
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'production';
 const s3ConfigObj = {
     s3BasePath: 'https://content-dmd.s3.eu-central-1.amazonaws.com/',
     s3Bucket: 'content-dmd',

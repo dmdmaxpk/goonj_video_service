@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Channel = mongoose.model('Channel');
 
-
 // CREATE
 exports.post = async (req, res) => {
 
@@ -37,6 +36,87 @@ exports.get = async (req, res) => {
 	}
 
 	res.send(result);
+}
+
+// READ
+exports.channelCategoryWise = async (req, res) => {
+
+	let { _id, slug, active } = req.query;
+	const query = {};
+
+	if (_id) query._id = _id;
+	if (slug) query.slug = slug;
+	if (active) query.active = JSON.parse(active);		// Conversion of string to Boolean
+
+	let finalResult = [];
+	// Single document
+	if (_id || slug) {
+		finalResult = await Channel.findOne(query); 		// Finding document on provided id or slug
+	}
+	// All documents
+	else {
+		let result = await Channel.aggregate([
+			{$sort: {seq: 1}},
+			{ $match: query},
+			{ $project:{
+				ad_tag: "$ad_tag",
+				views_count: "$views_count",
+				name: "$name",
+				hls_link: "$hls_link",
+				slug: "$slug",
+				category: "$category",
+				thumbnail: "$thumbnail",
+				package_id: "$package_id",
+				seq: "$seq",
+				is_streamable: "$is_streamable"
+			}},
+			{ $group:{
+				_id: {category: "$category"},
+				content: { $push:  {
+					_id: "$_id",
+					ad_tag: "$ad_tag",
+					views_count: "$views_count",
+					name: "$name",
+					hls_link: "$hls_link",
+					slug: "$slug",
+					category: "$category",
+					thumbnail: "$thumbnail",
+					package_id: "$package_id",
+					seq: "$seq",
+					is_streamable: "$is_streamable"
+				}}
+			}},
+			{ $project:{
+				_id: 0,
+				content: 1
+			}}
+		]);
+
+
+		if (result)
+			finalResult = computeFn(result);
+	}
+
+	res.send(finalResult);
+}
+
+function computeFn(result){
+	let finalResult = [];
+	let content , obj, keyName;
+	for (let res of result){
+		content = res.content;
+		if (content.length > 0){
+			obj = content[0];
+			if (obj.category.length === 0)
+				keyName = 'no_cat';
+			else
+				keyName = obj.category;
+
+			finalResult.push({[keyName] : content});
+		}
+	}
+
+	return finalResult;
 }
 
 // READ

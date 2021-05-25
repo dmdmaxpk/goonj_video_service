@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Video = mongoose.model('Video');
 const axios = require('axios');
 const config = require('../config');
+const VideoRepository = require('../repos/VideoRepository');
+videoRepository = new VideoRepository();
 
 
 // CREATE
@@ -96,4 +98,131 @@ exports.delete = async (req, res) => {
 		console.log('No video with this ID found!');
 		res.send('No video with this ID found!');
 	}
+}
+
+
+// Get recommended videos by file name
+exports.getRecommended = async (req, res) => {
+	let query = req.query;
+	let recommended = [], alreadyFetchedIds = [query._id];
+	let result = await Video.findOne({_id: query._id});
+	if (result) {
+
+		let queryParams;
+			//Fetch Last Two Records
+		queryParams = prepareQuery(result);
+		let lastTwoRecords = await getPrevious(result, queryParams);
+		if (lastTwoRecords.length > 0) {
+			recommended = recommended.concat(lastTwoRecords);
+
+			let ids = getIds(lastTwoRecords);
+			alreadyFetchedIds = alreadyFetchedIds.concat(ids);
+		}
+
+		//Fetch Next Two Records
+		queryParams = prepareQuery(result);
+		let nextTwoRecords = await getNextVideos(result, queryParams);
+		if (nextTwoRecords.length > 0) {
+			recommended = recommended.concat(nextTwoRecords);
+
+			let ids = getIds(nextTwoRecords);
+			alreadyFetchedIds = alreadyFetchedIds.concat(ids);
+		}
+	}
+
+	console.log('alreadyFetchedIds: ', alreadyFetchedIds);
+
+	//Fetch Next Highly Recommended Data
+	let otherRecommendedVideos = await getHighlyRecommendedVideos(alreadyFetchedIds);
+	if (otherRecommendedVideos.length > 0)
+		recommended = recommended.concat(otherRecommendedVideos);
+
+	res.send({code: 1, recommended: recommended, message: 'Recommended VODs'});
+}
+
+function prepareQuery(result){
+	let queryParams = {};
+	let category = result.category;
+	queryParams.category = category;
+	if(category === 'featured' || category === 'viral' || category === 'corona'){
+		//
+	}
+	else if (category === 'comedy' || category === 'news' || category === 'sports' || category === 'education' || category === 'premium' || category === 'entertainment'){
+		queryParams.source = result.source;
+	}
+	else if (category === 'programs' || category === 'food'){
+		queryParams.source = result.source;
+		queryParams.program = result.program;
+		queryParams.anchor = result.anchor;
+	}
+	else if (category === 'drama'){
+		queryParams.source = result.source;
+		queryParams.program = result.program;
+	}
+
+	return queryParams;
+}
+
+async function getPrevious(result, queryParams){
+	queryParams.last_modified = {$lt: new Date(result.last_modified)};
+	console.log('getPrevious - queryParams: ', queryParams);
+
+	let lastTwoRecords = await videoRepository.getViewerInterestedData( queryParams, -1, 2 );
+	console.log('lastTwoRecords: ', lastTwoRecords);
+
+	if (lastTwoRecords.length === 0){
+		if(queryParams.hasOwnProperty('anchor')){
+			delete queryParams.anchor;
+			lastTwoRecords = await getNextVideos(result, queryParams);
+		}
+		else if(queryParams.hasOwnProperty('program')){
+			delete queryParams.program;
+			lastTwoRecords = await getNextVideos(result, queryParams);
+		}
+		else if(queryParams.hasOwnProperty('source')){
+			delete queryParams.source;
+			lastTwoRecords = await getNextVideos(result, queryParams);
+		}
+	}
+
+	return lastTwoRecords;
+}
+
+async function getNextVideos(result, queryParams){
+	queryParams.last_modified = {$gt: new Date(result.last_modified)};
+	console.log('nextTwoRecords - queryParams: ', queryParams);
+
+	let nextTwoRecords = await videoRepository.getViewerInterestedData( queryParams, 1,5 );
+	console.log('nextTwoRecords: ', nextTwoRecords);
+
+	if (nextTwoRecords.length === 0){
+		if(queryParams.hasOwnProperty('anchor')){
+			delete queryParams.anchor;
+			nextTwoRecords = await getNextVideos(result, queryParams);
+		}
+		else if(queryParams.hasOwnProperty('program')){
+			delete queryParams.program;
+			nextTwoRecords = await getNextVideos(result, queryParams);
+		}
+		else if(queryParams.hasOwnProperty('source')){
+			delete queryParams.source;
+			nextTwoRecords = await getNextVideos(result, queryParams);
+		}
+	}
+
+	return nextTwoRecords;
+}
+
+async function getHighlyRecommendedVideos(alreadyFetchedIds){
+	let today = new Date();
+	let otherRecommendedVideos = await videoRepository.getOtherHighRecommendedData( today, alreadyFetchedIds, -1,20);
+	console.log('otherRecommendedVideos: ', otherRecommendedVideos.length);
+
+	return otherRecommendedVideos;
+}
+
+function getIds(records){
+	let ids = [];
+	if (records) for (const record of records) ids.push(record._id);
+	return ids;
 }

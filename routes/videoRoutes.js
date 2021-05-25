@@ -10,4 +10,8 @@ router.route('/')
     .delete(videoController.delete);
 
 
+router.route('/recommended')
+    .get(videoController.getRecommended)
+
+
 module.exports = router;

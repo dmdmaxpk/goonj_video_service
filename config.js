@@ -1,16 +1,16 @@
-const env = process.env.NODE_ENV || 'production';
+const env = process.env.NODE_ENV || 'development';
 const s3ConfigObj = {
     s3BasePath: 'https://content-dmd.s3.eu-central-1.amazonaws.com/',
     s3Bucket: 'content-dmd',
     s3folderPath: 'TP-Content/Sliders'
 }
-// mongodb://10.3.7.101:27017telenor_v2
+// mongodb://10.3.7.101:27017/telenor_v2
 
 let config = {
     development: {
-        port: '3000',
+        port: '3009',
         s3ConfigObj: s3ConfigObj,
-        mongoDB: 'mongodb://localhost:27017/telenor_v2',
+        mongoDB: 'mongodb://10.3.7.101:27017/telenor_v2',
         transcodeServiceUrl: 'http://10.3.7.12:3011/transcode'
     },
     staging: {

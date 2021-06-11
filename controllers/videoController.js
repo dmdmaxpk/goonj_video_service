@@ -167,7 +167,7 @@ async function getPrevious(result, queryParams){
 	queryParams.last_modified = {$lt: new Date(result.last_modified)};
 	console.log('getPrevious - queryParams: ', queryParams);
 
-	let lastTwoRecords = await videoRepository.getViewerInterestedData( queryParams, 1, 2 );
+	let lastTwoRecords = await videoRepository.getViewerInterestedDataPrevious( queryParams, -1, 1, 2 );
 	console.log('lastTwoRecords: ', lastTwoRecords);
 
 	if (lastTwoRecords.length === 0){
@@ -192,7 +192,7 @@ async function getNextVideos(result, queryParams){
 	queryParams.last_modified = {$gt: new Date(result.last_modified)};
 	console.log('nextTwoRecords - queryParams: ', queryParams);
 
-	let nextTwoRecords = await videoRepository.getViewerInterestedData( queryParams, 1,5 );
+	let nextTwoRecords = await videoRepository.getViewerInterestedDataNext( queryParams, 1, 5);
 	console.log('nextTwoRecords: ', nextTwoRecords);
 
 	if (nextTwoRecords.length === 0){

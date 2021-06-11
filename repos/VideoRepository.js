@@ -3,7 +3,16 @@ const Video = mongoose.model('Video');
 
 class VideoRepository{
 
-    async getViewerInterestedData (query, sort, limit) {
+    async getViewerInterestedDataPrevious (query, a_sort, b_sort, limit) {
+        return await Video.aggregate([
+            { $match: query },
+            { $sort: {last_modified: a_sort} },
+            { $limit: limit },
+            { $sort: {last_modified: b_sort} }
+        ]);
+    }
+
+    async getViewerInterestedDataNext (query, sort, limit) {
         return await Video.aggregate([
             { $match: query },
             { $sort: {last_modified: sort} },

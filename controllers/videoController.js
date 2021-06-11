@@ -152,12 +152,12 @@ function prepareQuery(result){
 	}
 	else if (category === 'programs' || category === 'food'){
 		queryParams.source = result.source;
-		queryParams.program = result.program;
+		queryParams.sub_category = result.sub_category;
 		queryParams.anchor = result.anchor;
 	}
 	else if (category === 'drama'){
 		queryParams.source = result.source;
-		queryParams.program = result.program;
+		queryParams.sub_category = result.sub_category;
 	}
 
 	return queryParams;

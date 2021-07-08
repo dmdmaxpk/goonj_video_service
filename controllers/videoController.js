@@ -111,6 +111,8 @@ exports.getRecommended = async (req, res) => {
 		//Fetch Last Two Records
 		queryParams = prepareQuery(result, 'prev');
 		let lastTwoRecords = await getPrevious(result, queryParams);
+		console.log('lastTwoRecords:length: ', lastTwoRecords.length)
+
 		if (lastTwoRecords.length > 0) {
 			recommended = recommended.concat(lastTwoRecords);
 
@@ -121,6 +123,8 @@ exports.getRecommended = async (req, res) => {
 		//Fetch Next Two Records
 		queryParams = prepareQuery(result, 'next');
 		let nextTwoRecords = await getNextVideos(result, queryParams);
+		console.log('nextTwoRecords:length: ', nextTwoRecords.length)
+
 		if (nextTwoRecords.length > 0) {
 			recommended = recommended.concat(nextTwoRecords);
 
@@ -129,11 +133,10 @@ exports.getRecommended = async (req, res) => {
 		}
 	}
 
-	console.log('alreadyFetchedIds: ', alreadyFetchedIds);
-
 	//Fetch Next Highly Recommended Data
 	queryParams = prepareQuery(result, 'topRated');
 	let otherRecommendedVideos = await getHighlyRecommendedVideos(queryParams, alreadyFetchedIds, 20);
+	console.log('otherRecommendedVideos:length: ', otherRecommendedVideos.length)
 	if (otherRecommendedVideos.length > 0)
 		recommended = recommended.concat(otherRecommendedVideos);
 
@@ -169,7 +172,6 @@ function prepareQuery(result, type){
 async function getPrevious(result, queryParams){
 	queryParams.last_modified = {$lt: new Date(result.last_modified)};
 	let lastTwoRecords = await videoRepository.getViewerInterestedDataPrevious( queryParams, -1, 1, 2 );
-	console.log('lastTwoRecords: ', lastTwoRecords);
 
 	if (lastTwoRecords.length === 0){
 		if(queryParams.hasOwnProperty('anchor')){
@@ -200,7 +202,6 @@ async function getPrevious(result, queryParams){
 async function getNextVideos(result, queryParams){
 	queryParams.last_modified = {$gt: new Date(result.last_modified)};
 	let nextTwoRecords = await videoRepository.getViewerInterestedDataNext( queryParams, 1, 5);
-	console.log('nextTwoRecords: ', nextTwoRecords);
 
 	if (nextTwoRecords.length === 0){
 		if(queryParams.hasOwnProperty('anchor')){
@@ -231,7 +232,7 @@ async function getNextVideos(result, queryParams){
 async function getHighlyRecommendedVideos(queryParams, alreadyFetchedIds, limit){
 	let otherRecommended = [], today = new Date();
 	let otherRecommendedVideos = await videoRepository.getOtherHighRecommendedData( queryParams, today, alreadyFetchedIds, -1, limit);
-	console.log('otherRecommendedVideos: ', otherRecommendedVideos);
+	otherRecommended = otherRecommended.concat(otherRecommendedVideos);
 
 	if (otherRecommendedVideos.length < limit){
 		if(queryParams.hasOwnProperty('source'))
@@ -240,7 +241,6 @@ async function getHighlyRecommendedVideos(queryParams, alreadyFetchedIds, limit)
 		if (otherRecommendedVideos.length > 0){
 			let ids = getIds(otherRecommendedVideos);
 			alreadyFetchedIds = alreadyFetchedIds.concat(ids);
-			otherRecommended = otherRecommended.concat(otherRecommendedVideos);
 		}
 
 		limit = Number(limit) - Number(otherRecommendedVideos.length);

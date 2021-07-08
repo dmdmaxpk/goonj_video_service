@@ -152,7 +152,7 @@ function prepareQuery(result){
 	}
 	else if (category === 'programs' || category === 'food'){
 		queryParams.source = result.source;
-		queryParams.sub_category = result.sub_category;
+		queryParams.program = result.program;
 		queryParams.anchor = result.anchor;
 	}
 	else if (category === 'drama'){
@@ -179,6 +179,10 @@ async function getPrevious(result, queryParams){
 			delete queryParams.program;
 			lastTwoRecords = await getNextVideos(result, queryParams);
 		}
+		else if(queryParams.hasOwnProperty('sub_category')){
+			delete queryParams.sub_category;
+			lastTwoRecords = await getNextVideos(result, queryParams);
+		}
 		else if(queryParams.hasOwnProperty('source')){
 			delete queryParams.source;
 			lastTwoRecords = await getNextVideos(result, queryParams);
@@ -202,6 +206,10 @@ async function getNextVideos(result, queryParams){
 		}
 		else if(queryParams.hasOwnProperty('program')){
 			delete queryParams.program;
+			nextTwoRecords = await getNextVideos(result, queryParams);
+		}
+		else if(queryParams.hasOwnProperty('sub_category')){
+			delete queryParams.sub_category;
 			nextTwoRecords = await getNextVideos(result, queryParams);
 		}
 		else if(queryParams.hasOwnProperty('source')){

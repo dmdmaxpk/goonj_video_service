@@ -29,6 +29,7 @@ require('./models/Topic');
 require('./models/Channel');
 require('./models/SubCategory');
 require('./models/Banner');
+require('./models/City');
 
 // Import routes
 app.use('/', require('./routes/index'));

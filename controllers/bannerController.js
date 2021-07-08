@@ -50,20 +50,9 @@ exports.get = async (req, res) => {
 	else
 		result = await Banner.find(query);
 
-	result = computeData(result);
 	res.send(result);
 }
 
-function computeData(result){
-	let banners = [];
-	if (result){
-		for (let res of result){
-			let url = config.s3ConfigObj.s3BasePath + res.folderPath + '/' + res.filename;
-			banners.push(url);
-		}
-	}
-	return {banners: banners};
-}
 
 function getFileName(file) {
 	let mt = mimeType.lookup(file.name);

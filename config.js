@@ -10,7 +10,7 @@ let config = {
     development: {
         port: '3009',
         s3ConfigObj: s3ConfigObj,
-        mongoDB: 'mongodb://10.3.7.101:27017/telenor_v2',
+        mongoDB: 'mongodb://localhost:27017/telenor_v2',
         transcodeServiceUrl: 'http://10.3.7.12:3011/transcode'
     },
     staging: {

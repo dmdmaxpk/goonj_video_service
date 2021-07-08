@@ -20,14 +20,12 @@ class VideoRepository{
         ]);
     }
 
-    async getOtherHighRecommendedData (today, ids, sort, limit) {
+    async getOtherHighRecommendedData (query, today, ids, sort, limit) {
+        query._id = {$nin: ids};
+        query.last_modified = {$lte: new Date(today)};
+
         return await Video.aggregate([
-            {
-                $match: {
-                    _id: {$nin: ids},
-                    last_modified: {$lte: new Date(today)}
-                }
-            },
+            { $match: query },
             { $sort: { views_count: sort, last_modified: sort }},
             { $limit: limit }
         ]);

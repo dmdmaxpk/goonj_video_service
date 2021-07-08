@@ -104,13 +104,12 @@ exports.delete = async (req, res) => {
 // Get recommended videos by file name
 exports.getRecommended = async (req, res) => {
 	let query = req.query;
-	let recommended = [], alreadyFetchedIds = [query._id];
+	let queryParams = {}, recommended = [], alreadyFetchedIds = [query._id];
 	let result = await Video.findOne({_id: query._id});
 	if (result) {
 
-		let queryParams;
-			//Fetch Last Two Records
-		queryParams = prepareQuery(result);
+		//Fetch Last Two Records
+		queryParams = prepareQuery(result, 'prev');
 		let lastTwoRecords = await getPrevious(result, queryParams);
 		if (lastTwoRecords.length > 0) {
 			recommended = recommended.concat(lastTwoRecords);
@@ -120,7 +119,7 @@ exports.getRecommended = async (req, res) => {
 		}
 
 		//Fetch Next Two Records
-		queryParams = prepareQuery(result);
+		queryParams = prepareQuery(result, 'next');
 		let nextTwoRecords = await getNextVideos(result, queryParams);
 		if (nextTwoRecords.length > 0) {
 			recommended = recommended.concat(nextTwoRecords);
@@ -133,59 +132,65 @@ exports.getRecommended = async (req, res) => {
 	console.log('alreadyFetchedIds: ', alreadyFetchedIds);
 
 	//Fetch Next Highly Recommended Data
-	let otherRecommendedVideos = await getHighlyRecommendedVideos(alreadyFetchedIds);
+	queryParams = prepareQuery(result, 'topRated');
+	let otherRecommendedVideos = await getHighlyRecommendedVideos(queryParams, alreadyFetchedIds, 20);
 	if (otherRecommendedVideos.length > 0)
 		recommended = recommended.concat(otherRecommendedVideos);
 
+	// Finally return the response
 	res.send({code: 1, recommended: recommended, message: 'Recommended VODs'});
 }
 
-function prepareQuery(result){
+function prepareQuery(result, type){
 	let queryParams = {};
-	let category = result.category;
-	queryParams.category = category;
-	if(category === 'featured' || category === 'viral' || category === 'corona'){
-		//
+	if (type === 'topRated') queryParams.source = result.source;
+	else {
+		let category = result.category;
+		queryParams.category = category;
+		if (category === 'featured' || category === 'viral') {
+			queryParams.source = result.source;
+			queryParams.feed = result.feed;
+		} else if (category === 'corona' || category === 'viral') {
+			queryParams.source = result.source;
+		} else if (category === 'comedy' || category === 'news' || category === 'sports' || category === 'education' || category === 'premium' || category === 'entertainment') {
+			queryParams.source = result.source;
+		} else if (category === 'programs' || category === 'food') {
+			queryParams.source = result.source;
+			queryParams.program = result.program;
+			queryParams.anchor = result.anchor;
+		} else if (category === 'drama') {
+			queryParams.source = result.source;
+			queryParams.sub_category = result.sub_category;
+		}
 	}
-	else if (category === 'comedy' || category === 'news' || category === 'sports' || category === 'education' || category === 'premium' || category === 'entertainment'){
-		queryParams.source = result.source;
-	}
-	else if (category === 'programs' || category === 'food'){
-		queryParams.source = result.source;
-		queryParams.program = result.program;
-		queryParams.anchor = result.anchor;
-	}
-	else if (category === 'drama'){
-		queryParams.source = result.source;
-		queryParams.sub_category = result.sub_category;
-	}
-
 	return queryParams;
 }
 
 async function getPrevious(result, queryParams){
 	queryParams.last_modified = {$lt: new Date(result.last_modified)};
-	console.log('getPrevious - queryParams: ', queryParams);
-
 	let lastTwoRecords = await videoRepository.getViewerInterestedDataPrevious( queryParams, -1, 1, 2 );
 	console.log('lastTwoRecords: ', lastTwoRecords);
 
 	if (lastTwoRecords.length === 0){
 		if(queryParams.hasOwnProperty('anchor')){
 			delete queryParams.anchor;
-			lastTwoRecords = await getNextVideos(result, queryParams);
+			lastTwoRecords = await getPrevious(result, queryParams);
 		}
 		else if(queryParams.hasOwnProperty('program')){
 			delete queryParams.program;
-			lastTwoRecords = await getNextVideos(result, queryParams);
+			lastTwoRecords = await getPrevious(result, queryParams);
 		}
 		else if(queryParams.hasOwnProperty('sub_category')){
 			delete queryParams.sub_category;
-			lastTwoRecords = await getNextVideos(result, queryParams);
+			lastTwoRecords = await getPrevious(result, queryParams);
 		}
 		else if(queryParams.hasOwnProperty('source')){
 			delete queryParams.source;
-			lastTwoRecords = await getNextVideos(result, queryParams);
+			lastTwoRecords = await getPrevious(result, queryParams);
+		}
+		else if(queryParams.hasOwnProperty('feed')){
+			delete queryParams.feed;
+			lastTwoRecords = await getPrevious(result, queryParams);
 		}
 	}
 
@@ -194,8 +199,6 @@ async function getPrevious(result, queryParams){
 
 async function getNextVideos(result, queryParams){
 	queryParams.last_modified = {$gt: new Date(result.last_modified)};
-	console.log('nextTwoRecords - queryParams: ', queryParams);
-
 	let nextTwoRecords = await videoRepository.getViewerInterestedDataNext( queryParams, 1, 5);
 	console.log('nextTwoRecords: ', nextTwoRecords);
 
@@ -216,17 +219,37 @@ async function getNextVideos(result, queryParams){
 			delete queryParams.source;
 			nextTwoRecords = await getNextVideos(result, queryParams);
 		}
+		else if(queryParams.hasOwnProperty('feed')){
+			delete queryParams.feed;
+			nextTwoRecords = await getNextVideos(result, queryParams);
+		}
 	}
 
 	return nextTwoRecords;
 }
 
-async function getHighlyRecommendedVideos(alreadyFetchedIds){
-	let today = new Date();
-	let otherRecommendedVideos = await videoRepository.getOtherHighRecommendedData( today, alreadyFetchedIds, -1,20);
-	console.log('otherRecommendedVideos: ', otherRecommendedVideos.length);
+async function getHighlyRecommendedVideos(queryParams, alreadyFetchedIds, limit){
+	let otherRecommended = [], today = new Date();
+	let otherRecommendedVideos = await videoRepository.getOtherHighRecommendedData( queryParams, today, alreadyFetchedIds, -1, limit);
+	console.log('otherRecommendedVideos: ', otherRecommendedVideos);
 
-	return otherRecommendedVideos;
+	if (otherRecommendedVideos.length < limit){
+		if(queryParams.hasOwnProperty('source'))
+			delete queryParams.source;
+
+		if (otherRecommendedVideos.length > 0){
+			let ids = getIds(otherRecommendedVideos);
+			alreadyFetchedIds = alreadyFetchedIds.concat(ids);
+			otherRecommended = otherRecommended.concat(otherRecommendedVideos);
+		}
+
+		limit = Number(limit) - Number(otherRecommendedVideos.length);
+		otherRecommendedVideos = await getHighlyRecommendedVideos(queryParams, alreadyFetchedIds, limit);
+		if (otherRecommendedVideos.length > 0)
+			otherRecommended = otherRecommended.concat(otherRecommendedVideos);
+	}
+
+	return otherRecommended;
 }
 
 function getIds(records){

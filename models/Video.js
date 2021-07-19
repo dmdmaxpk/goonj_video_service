@@ -23,6 +23,7 @@ const videoSchema = new Schema({
     duration: Number,                           // Duration of the video in seconds
     file_name: String,
     thumbnail: String,
+    small_thumbnail: String,
     pinned: { type: Boolean, default: false, index: true },
     active: { type: Boolean, default: false, index: true },
     transcoding_status: { type: Boolean, default: false },

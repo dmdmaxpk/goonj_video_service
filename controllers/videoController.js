@@ -141,7 +141,7 @@ exports.getRecommended = async (req, res) => {
 		recommended = recommended.concat(otherRecommendedVideos);
 
 	// Finally return the response
-	res.send({code: 1, recommended: recommended, message: 'Recommended VODs'});
+	res.send(recommended);
 }
 
 function prepareQuery(result, type){

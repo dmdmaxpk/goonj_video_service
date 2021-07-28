@@ -63,7 +63,7 @@ exports.get = async (req, res) => {
 }
 
 // READ
-exports.filter = async (req, res) => {
+exports.filterVideo = async (req, res) => {
 
 	let { _id, title, category, sub_category, source, program, added_dtm, limit } = req.query;
 	const query = {};
@@ -76,8 +76,11 @@ exports.filter = async (req, res) => {
 	if (program) query.program = program;
 	if (added_dtm) query.added_dtm = added_dtm;
 
+	console.log('query: ', query);
+
 	let result = await Video.find(query).sort({ views_count: -1 }).limit(Number(limit) || 10);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
 
+	console.log('result: ', result);
 	res.send(result);
 }
 

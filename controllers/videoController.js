@@ -5,7 +5,6 @@ const config = require('../config');
 const VideoRepository = require('../repos/VideoRepository');
 videoRepository = new VideoRepository();
 
-
 // CREATE
 exports.post = async (req, res) => {
 
@@ -59,6 +58,24 @@ exports.get = async (req, res) => {
 	else {
 		result = await Video.find(query).sort({ added_dtm: -1 }).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
 	}
+
+	res.send(result);
+}
+
+// READ
+exports.filter = async (req, res) => {
+
+	let { _id, title, category, sub_category, source, added_dtm, limit } = req.query;
+	const query = {};
+
+	if (_id) query._id = _id;
+	if (title) query.title = title;
+	if (category) query.category = category;
+	if (sub_category) query.sub_category = sub_category;
+	if (source) query.source = source;
+	if (added_dtm) query.added_dtm = added_dtm;
+
+	let result = await Video.find(query).sort({ views_count: -1 }).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
 
 	res.send(result);
 }

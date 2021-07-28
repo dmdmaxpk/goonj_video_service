@@ -13,5 +13,8 @@ router.route('/')
 router.route('/recommended')
     .get(videoController.getRecommended)
 
+router.route('/filter')
+    .get(videoController.filter)
+
 
 module.exports = router;

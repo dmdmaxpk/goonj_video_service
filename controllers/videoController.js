@@ -65,7 +65,7 @@ exports.get = async (req, res) => {
 // READ
 exports.filter = async (req, res) => {
 
-	let { _id, title, category, sub_category, source, added_dtm, limit } = req.query;
+	let { _id, title, category, sub_category, source, program, added_dtm, limit } = req.query;
 	const query = {};
 
 	if (_id) query._id = _id;
@@ -73,9 +73,10 @@ exports.filter = async (req, res) => {
 	if (category) query.category = category;
 	if (sub_category) query.sub_category = sub_category;
 	if (source) query.source = source;
+	if (program) query.program = program;
 	if (added_dtm) query.added_dtm = added_dtm;
 
-	let result = await Video.find(query).sort({ views_count: -1 }).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
+	let result = await Video.find(query).sort({ views_count: -1 }).limit(Number(limit) || 10);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
 
 	res.send(result);
 }

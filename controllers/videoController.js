@@ -31,7 +31,7 @@ exports.post = async (req, res) => {
 // READ
 exports.get = async (req, res) => {
 
-	let { _id, title, category, sub_category, sub_sub_category, added_dtm, active, feed, anchor, topics, pinned, skip, limit } = req.query;
+	let { _id, title, category, sub_category, sub_sub_category, source, program, added_dtm, active, feed, anchor, topics, pinned, sort_mode, skip, limit } = req.query;
 	const query = {};
 
 	if (_id) query._id = _id;
@@ -39,6 +39,8 @@ exports.get = async (req, res) => {
 	if (category) query.category = category;
 	if (sub_category) query.sub_category = sub_category;
 	if (sub_sub_category) query.sub_sub_category = sub_sub_category;
+	if (source) query.source = source;
+	if (program) query.program = program;
 
 	if (anchor) query.anchor = { $in: anchor.split(',') } 
 	if (topics) query.topics = { $in: topics.split(',') } 
@@ -48,39 +50,21 @@ exports.get = async (req, res) => {
 	if (pinned) query.pinned = JSON.parse(pinned);		// Conversion of string to Boolean
 
 	let result;
-	
-	// Single document
-	if (_id) {
-		result = await Video.findOne(query); 
-		console.log(`GET Video by ID=${_id}`);
+	if (sort_mode === 'view_count'){
+		result = await Video.find(query).sort({ views_count: -1 }).limit(Number(limit) || 10);
 	}
-	// All documents
-	else {
-		result = await Video.find(query).sort({ added_dtm: -1 }).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
+	else{
+		// Single document
+		if (_id) {
+			result = await Video.findOne(query);
+			console.log(`GET Video by ID=${_id}`);
+		}
+		// All documents
+		else {
+			result = await Video.find(query).sort({ added_dtm: -1 }).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
+		}
 	}
 
-	res.send(result);
-}
-
-// READ
-exports.filterVideo = async (req, res) => {
-
-	let { _id, title, category, sub_category, source, program, added_dtm, limit } = req.query;
-	const query = {};
-
-	if (_id) query._id = _id;
-	if (title) query.title = title;
-	if (category) query.category = category;
-	if (sub_category) query.sub_category = sub_category;
-	if (source) query.source = source;
-	if (program) query.program = program;
-	if (added_dtm) query.added_dtm = added_dtm;
-
-	console.log('query: ', query);
-
-	let result = await Video.find(query).sort({ views_count: -1 }).limit(Number(limit) || 10);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
-
-	console.log('result: ', result);
 	res.send(result);
 }
 

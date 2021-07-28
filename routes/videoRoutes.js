@@ -9,12 +9,7 @@ router.route('/')
     .put(videoController.put)
     .delete(videoController.delete);
 
-
 router.route('/recommended')
     .get(videoController.getRecommended)
-
-router.route('/filter-video')
-    .get(videoController.filterVideo)
-
 
 module.exports = router;

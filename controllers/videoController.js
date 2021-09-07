@@ -61,7 +61,7 @@ exports.get = async (req, res) => {
 		}
 		// All documents
 		else {
-			result = await Video.find(query).sort({ added_dtm: -1 }).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
+			result = await Video.find(query).sort({ pinned: -1, added_dtm: -1 }).limit(Number(limit) || 16);  		// Sorting by added_dtm && Applying limit if provided otherwise default 16
 		}
 	}
 

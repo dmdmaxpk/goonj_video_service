@@ -75,15 +75,26 @@ exports.put = async (req, res) => {
 	console.log("query",query);
 	let postBody = req.body;
 	postBody.last_modified = new Date();	// Adding last_modified on video update
-	
-	const result = await Video.updateOne(query, postBody);		// Updating values
-	
-	if (result.nModified == 0) {
+
+	const result = await Video.findOneAndUpdate(query, postBody, {new: true});		// Updating values
+	if (!result) {
 		console.log('No Video with this ID found!');
 		res.send('No Video with this ID found!');
 	}
 	else {
 		console.log(`Video Updated!`);
+
+		if(postBody.active){
+			let data = await Video.findOne({_id: req.query._id});
+			axios.post(`${config.micro_services.user_service}/preference/notification`, data)
+			.then(res =>{
+				console.log(res.data)
+			})
+			.catch(err =>{
+				// console.log(err)
+			})
+		}
+
 		res.send(`Video Updated!`);
 	}
 }

@@ -27,8 +27,9 @@ const videoSchema = new Schema({
     pinned: { type: Boolean, default: false, index: true },
     active: { type: Boolean, default: false, index: true },
     transcoding_status: { type: Boolean, default: false },
-    is_premium: { type: Boolean, default: false}
-
+    is_premium: { type: Boolean, default: false},
+    last_video: { type: String, ref: 'Video' },
+    next_video: { type: String, ref: 'Video' }
 }, { strict: true })
 
 module.exports = mongoose.model('Video', videoSchema);

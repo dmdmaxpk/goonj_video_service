@@ -273,3 +273,29 @@ function getIds(records){
 	if (records) for (const record of records) ids.push(record._id);
 	return ids;
 }
+exports.addAsNext = async (req, res) => {
+	const {_id, subCategory} = req.body;
+
+	const lastEpisode = await Video.findOne({sub_category: subCategory}).sort({episode: -1});
+	
+	let episodeNumber
+	if (lastEpisode?.episode) episodeNumber = Number(lastEpisode?.episode) + 1;
+	else episodeNumber = 1
+
+	const result = await Video.updateOne({_id}, {episode: episodeNumber});
+
+	let updateLastEpisode;
+	if (lastEpisode._id !== _id) {
+		updateLastEpisode = await Video.updateOne({_id: lastEpisode?._id}, {next_video: _id});
+	}
+
+	res.send({lastVideo: updateLastEpisode, currentVideo: result});
+}
+
+exports.getEpisodes = async (req, res) => {
+	const {sub_category} = req.query;
+
+	const videos = await Video.find({sub_category, episode: {$exists: true}}).sort({episode: -1});
+
+	res.send(videos);
+}

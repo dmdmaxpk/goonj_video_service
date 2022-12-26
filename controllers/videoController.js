@@ -280,14 +280,14 @@ exports.addAsNext = async (req, res) => {
 	const lastEpisode = await Video.findOne({sub_category: subCategory}).sort({episode: -1});
 	
 	let episodeNumber
-	if (lastEpisode?.episode) episodeNumber = Number(lastEpisode?.episode) + 1;
+	if (lastEpisode && lastEpisode.episode) episodeNumber = Number(lastEpisode.episode) + 1;
 	else episodeNumber = 1;
 
 	const result = await Video.updateOne({_id}, {episode: episodeNumber, last_episode: lastEpisode ? lastEpisode._id : undefined});
 
 	let updateLastEpisode;
 	if (lastEpisode._id !== _id) {
-		updateLastEpisode = await Video.updateOne({_id: lastEpisode?._id}, {next_video: _id});
+		updateLastEpisode = await Video.updateOne({_id: lastEpisode._id}, {next_video: _id});
 	}
 
 	res.send({lastVideo: updateLastEpisode, currentVideo: result});

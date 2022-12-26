@@ -59,6 +59,8 @@ exports.get = async (req, res) => {
 		if (_id) {
 			result = await Video.findOne(query);
 			console.log(`GET Video by ID=${_id}`);
+		} else if (req.query.sortOrder == 'asc') {
+			result = await Video.find(query).sort({ added_dtm: 1 })	// Sorting by added_dtm && Applying limit if provided otherwise default 16
 		}
 		// All documents
 		else {

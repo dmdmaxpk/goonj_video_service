@@ -29,7 +29,8 @@ const videoSchema = new Schema({
     transcoding_status: { type: Boolean, default: false },
     is_premium: { type: Boolean, default: false},
     last_video: { type: String, ref: 'Video' },
-    next_video: { type: String, ref: 'Video' }
+    next_video: { type: String, ref: 'Video' },
+    episode: { type: Number }
 }, { strict: true })
 
 module.exports = mongoose.model('Video', videoSchema);

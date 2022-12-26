@@ -5,10 +5,11 @@ const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
 const fileupload = require('express-fileupload');
 const config = require('./config');
-
+const cors = require('cors')
 const app = express();
 
 // Middlewares
+app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

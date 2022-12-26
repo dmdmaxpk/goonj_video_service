@@ -11,5 +11,11 @@ router.route('/')
 
 router.route('/recommended')
     .get(videoController.getRecommended)
+    
+router.route('/link')
+    .post(videoController.addAsNext);
+
+router.route('/episodes')
+    .get(videoController.getEpisodes);
 
 module.exports = router;

@@ -45,6 +45,7 @@ exports.get = async (req, res) => {
 	if (feed) query.feed = feed;
 	if (active) query.active = active;
 	if (pinned) query.pinned = JSON.parse(pinned);		// Conversion of string to Boolean
+	if (req.query.episode === 'false' || req.query.episode === false) query.episode = {$exists: false}
 
 	let result;
 	
@@ -105,9 +106,9 @@ exports.addAsNext = async (req, res) => {
 	
 	let episodeNumber
 	if (lastEpisode?.episode) episodeNumber = Number(lastEpisode?.episode) + 1;
-	else episodeNumber = 1
+	else episodeNumber = 1;
 
-	const result = await Video.updateOne({_id}, {episode: episodeNumber});
+	const result = await Video.updateOne({_id}, {episode: episodeNumber, last_episode: lastEpisode ? lastEpisode._id : undefined});
 
 	let updateLastEpisode;
 	if (lastEpisode._id !== _id) {

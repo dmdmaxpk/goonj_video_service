@@ -28,6 +28,7 @@ const videoSchema = new Schema({
     active: { type: Boolean, default: false, index: true },
     transcoding_status: { type: Boolean, default: false },
     is_premium: { type: Boolean, default: false},
+    is_mta_only: { type: Boolean, default: false},
     last_video: { type: String, ref: 'Video' },
     next_video: { type: String, ref: 'Video' },
     episode: { type: Number }
